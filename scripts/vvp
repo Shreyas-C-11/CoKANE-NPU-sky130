@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+base=$(cd "$(dirname "$0")/../.." && pwd)
+cad="$base/tools/oss-cad-suite"
+unset PYTHONHOME PYTHONEXECUTABLE
+exec "$cad/lib/ld-linux-x86-64.so.2" --inhibit-cache --inhibit-rpath '' --library-path "$cad/lib" "$cad/libexec/vvp" "$@"

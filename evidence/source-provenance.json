@@ -1,0 +1,7 @@
+{
+  "picorv32": "ef203c2b0a3fb793280f5114941416c425c5b461",
+  "mac_sentry": "85ddffb1a075da11f08c6ae78307abfb2458ea0a",
+  "tt_support": "8f7b5060d7f6df73bfd2e0b8d8fa0fd1dca0a0b1",
+  "imported_from": "../tt_soc",
+  "note": "Imported source files; baseline integration modified locally. GitHub publication not requested."
+}
