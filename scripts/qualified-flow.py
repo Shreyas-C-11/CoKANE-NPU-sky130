@@ -2,7 +2,7 @@
 import os,pathlib,sys,json
 from librelane.state import State
 from librelane.flows.classic import Classic
-from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT
+from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT,DetailedRouting
 from librelane.steps import Step
 
 @Step.factory.register()
@@ -29,11 +29,29 @@ class FinalElectricalRepair(SlowCornerRepair):
     def get_script_path(self):
         return str(pathlib.Path(__file__).with_name('final-electrical.tcl'))
 
+@Step.factory.register()
+class PostRouteFanoutRepair(SlowCornerRepair):
+    id='OpenROAD.PostRouteFanoutRepair'
+    name='Post-route Fanout Branch Repair'
+    def get_script_path(self):
+        return str(pathlib.Path(__file__).with_name('post-fanout.tcl'))
+
+@Step.factory.register()
+class PostFanoutReroute(DetailedRouting):
+    id='OpenROAD.PostFanoutReroute'
+    name='Post-fanout Detailed Routing'
+    def run(self,state_in,**kwargs):
+        if not state_in.metrics.get('design__postroute_fanout_splits',0):
+            return {},{}
+        return super().run(state_in,**kwargs)
+
 class QualifiedCPUFlow(Classic):
     Steps=Classic.Steps.copy()
     Steps.insert(Steps.index(CTS)+1,ClockFanoutRepair)
     Steps[Steps.index(RepairDesignPostGRT)]=SlowCornerRepair
     Steps.insert(Steps.index(ResizerTimingPostGRT)+1,FinalElectricalRepair)
+    index=Steps.index(DetailedRouting)+1
+    Steps[index:index]=[PostRouteFanoutRepair,PostFanoutReroute]
 
 root=pathlib.Path(__file__).resolve().parent.parent
 pdk_root=pathlib.Path(os.environ['PDK_ROOT'])
