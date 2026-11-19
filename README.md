@@ -38,3 +38,7 @@ The hybrid core combines SECDED accumulator storage, modulo-7 candidate checking
 ## Acceptance gates
 
 Require functional RTL tests, completed physical flow, required DRC/LVS/antenna checks, setup/hold across required corners at 50 ns, pin-level gate tests, SDF timing validation where supported, and Tiny Tapeout prechecks. Retain source identities and reports. Until these pass, do not label this design confirmed for tapeout.
+
+## Local build notifications
+
+`scripts/harden-local.sh` invokes `scripts/notify-build.py` at start and finish, including failed exits. The handler writes `evidence/build-notification.json` and appends changed states to ignored `evidence/build-events.jsonl`. Run `python3 scripts/notify-build.py` to refresh status for an existing run. Reports distinguish flow completion, tool failure and outstanding physical violations; they never assert full sign-off. The handler records local events only. It has no mail, webhook or Codex background-message integration.
