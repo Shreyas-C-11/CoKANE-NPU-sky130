@@ -1,20 +1,22 @@
-# Repair only excessive routed signal fanout; retain final limit 10.
+# Reserve three routed-load slots for antenna diodes; final limit remains 10.
 source $::env(SCRIPTS_DIR)/openroad/common/io.tcl
 read_current_odb
 set_propagated_clock [all_clocks]
 set modified 0
 set index 0
 foreach net [$::block getNets] {
- if {[$net getSigType] == "POWER" || [$net getSigType] == "GROUND"} {continue}
+ if {[$net getSigType] == "POWER" || [$net getSigType] == "GROUND" || [$net getSigType] == "CLOCK"} {continue}
+ set name [$net getName]
+ if {$name=="clk" || [string match "clknet*" $name] || [string match "cts_fanout*" $name]} {continue}
  set loads {}
  foreach pin [$net getITerms] {
   if {[$pin getIoType] != "OUTPUT"} {lappend loads "[[$pin getInst] getName]/[[$pin getMTerm] getName]"}
  }
- if {[llength $loads] <= 10} {continue}
+ if {[llength $loads] <= 7} {continue}
  set loads [lsort $loads]
  puts "Post-route fanout split: [$net getName] loads=[llength $loads]"
- for {set start 0} {$start<[llength $loads]} {incr start 5} {
-  set group [lrange $loads $start [expr {$start+4}]]
+ for {set start 0} {$start<[llength $loads]} {incr start 4} {
+  set group [lrange $loads $start [expr {$start+3}]]
   set sx 0.0;set sy 0.0
   foreach name $group {
    lassign [split $name /] inst_name term_name
