@@ -29,3 +29,5 @@ evidence/gl-exit-code.txt
 .precheck-venv/
 
 verification/
+
+__pycache__/

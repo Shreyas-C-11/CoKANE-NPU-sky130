@@ -34,6 +34,6 @@ assert (pdk_root/'sky130A').is_dir(), 'Pinned SKY130 revision missing'
 flow=QualifiedCPUFlow(sys.argv[1],pdk_root=str(pdk_root),pdk='sky130A')
 options={}
 if os.getenv('QUALIFY_FROM_STATE'):
-    options['with_initial_state']=State.load(os.environ['QUALIFY_FROM_STATE'])
+    options['with_initial_state']=State.loads(pathlib.Path(os.environ['QUALIFY_FROM_STATE']).read_text())
     options['frm']='OpenROAD.SlowCornerRepair'
 flow.start(tag=sys.argv[2],_force_run_dir=sys.argv[3],**options)
