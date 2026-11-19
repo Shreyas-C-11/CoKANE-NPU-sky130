@@ -56,4 +56,9 @@ if { $::env(GRT_DESIGN_REPAIR_RUN_GRT) } {
 }
 
 
+puts "Post-repair slow-corner electrical report"
+report_check_types -max_slew -max_capacitance -max_fanout -violators -corner max_ss_100C_1v60
+write_metric_int "design__max_slew_violation__count" [sta::max_slew_violation_count]
+write_metric_int "design__max_cap_violation__count" [sta::max_capacitance_violation_count]
+write_metric_int "design__max_fanout_violation__count" [sta::max_fanout_violation_count]
 write_views

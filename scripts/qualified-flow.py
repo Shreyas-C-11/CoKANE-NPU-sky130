@@ -17,6 +17,8 @@ class ClockFanoutRepair(OpenROADStep):
 class SlowCornerRepair(RepairDesignPostGRT):
     id='OpenROAD.SlowCornerRepair'
     name='Slow Corner Electrical Repair'
+    def run(self,state_in,**kwargs):
+        return OpenROADStep.run(self,state_in,corners=['max_ss_100C_1v60'],**kwargs)
     def get_script_path(self):
         return str(pathlib.Path(__file__).with_name('repair-slowcorner.tcl'))
 
@@ -36,4 +38,5 @@ options={}
 if os.getenv('QUALIFY_FROM_STATE'):
     options['with_initial_state']=State.loads(pathlib.Path(os.environ['QUALIFY_FROM_STATE']).read_text())
     options['frm']='OpenROAD.SlowCornerRepair'
+if os.getenv('QUALIFY_TO'): options['to']=os.environ['QUALIFY_TO']
 flow.start(tag=sys.argv[2],_force_run_dir=sys.argv[3],**options)
