@@ -1,0 +1,35 @@
+{
+  "run": "wokwi",
+  "corner": "max_ss_100C_1v60",
+  "negative_fast_clock": false,
+  "process_exit": 0,
+  "firmware_pass_marker": false,
+  "netlist_sha256": "53ba9bae6e0ce9d392fc415dd3123bd8f5dc90376736a382b808aa6fc6d47d7f",
+  "sdf_sha256": "0202f71f9f94855ffd5a79527381be2f7e4adbd200ec932183daf48fac29112f",
+  "simulator_source": {
+    "commit": "1c5e043ec33ef6f1fdbf38565501c944893a83cf",
+    "sha256": "bb9d8acd54f168db608b4a16a6bebc758cca59836fdfacebd89d0b635aa2cf13"
+  },
+  "command": [
+    "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/verification/tools/open-src-cvc-1c5e043ec33ef6f1fdbf38565501c944893a83cf/build64/cvc64",
+    "+interp",
+    "+define+USE_POWER_PINS",
+    "+typdelays",
+    "+sdf_annotate",
+    "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/wokwi/final/sdf/max_ss_100C_1v60/tt_um_cokane_soc__max_ss_100C_1v60.sdf+tb_sdf.user_project",
+    "+sdf_log_file",
+    "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/verification/timing/wokwi/max_ss_100C_1v60-attempt5/annotation.log",
+    "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/verification/timing/wokwi/max_ss_100C_1v60-attempt5/primitives-cvc.v",
+    "-v",
+    "/home/jagat/.sys/cokane-soc/pdk/ciel/sky130/versions/8afc8346a57fe1ab7934ba5a6056ea8b43078e71/sky130A/libs.ref/sky130_fd_sc_hd/verilog/sky130_fd_sc_hd.v",
+    "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/wokwi/final/pnl/tt_um_cokane_soc.pnl.v",
+    "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/test/tb_sdf.v",
+    "+PROGRAM=/home/jagat/.sys/cokane-soc/cpu-mac-baseline/verification/timing/wokwi/max_ss_100C_1v60-attempt5/firmware.hex"
+  ],
+  "simulation_log": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/verification/timing/wokwi/max_ss_100C_1v60-attempt5/simulation.log",
+  "annotation_log": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/verification/timing/wokwi/max_ss_100C_1v60-attempt5/annotation.log",
+  "status": "unsupported_timing_model",
+  "udp_whitespace_only_compatibility": true,
+  "attempt": "5",
+  "reason": "CVC warns 3153/3154/3155: optional delayed signals and timestamp/check conditions unsupported. The unmodified SKY130 timing model leaves delayed nets undriven, so firmware status is unknown. Not a qualified timing result and not a design failure."
+}
