@@ -1,0 +1,23 @@
+{
+  "run": "r13-fanoutheadroom",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 7959,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 7959,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "bb9665c425fbf8801b31bd9e06d8c8d286fa411cf46f5465da8dae050655cc14",
+  "sdf_annotated": false,
+  "waveform_setting": "0",
+  "wrong_expected_value_negative_control": true
+}

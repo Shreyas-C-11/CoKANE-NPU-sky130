@@ -1,0 +1,10 @@
+LibreLane 3.0.14
+OpenROAD git revision (first line below):
+dcf36133a369abc8f3c5e5738cd4d82e4903c0e0 
+Yosys 0.62 (git sha1 7326bb7d6641500ecb285c291a54a662cb1e76cf, clang++ 21.1.2 -fPIC -O3)
+8.3.623
+KLayout 0.30.7
+/nix/store/ny64vspvrhrdm88rh1mpbxy9nsz4bsji-devshell-dir/bin/openroad
+/nix/store/ny64vspvrhrdm88rh1mpbxy9nsz4bsji-devshell-dir/bin/yosys
+/nix/store/ny64vspvrhrdm88rh1mpbxy9nsz4bsji-devshell-dir/bin/magic
+/nix/store/ny64vspvrhrdm88rh1mpbxy9nsz4bsji-devshell-dir/bin/klayout

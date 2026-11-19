@@ -1,0 +1,22 @@
+{
+  "run": "r9-extractedmargin",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 7959,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 7959,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "2a87a1b38b3cffbc569b68b61ded5962b764b1d1694db89d24eb90abad12fb7d",
+  "sdf_annotated": false,
+  "wrong_expected_value_negative_control": true
+}

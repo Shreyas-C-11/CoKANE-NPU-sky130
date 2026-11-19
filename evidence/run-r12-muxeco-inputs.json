@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/r12-muxeco",
+  "source_commit": "8316e18a66601ca2c1632d7c139102570fe97425",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r11-fanouteco/02-openroad-postfanoutreroute/state_out.json",
+  "resume_step": "OpenROAD.PostRouteTransitionRepair",
+  "parent_checkpoint_sha256": "17a0534eccc18920ae332d4e3bc896f767e99fb2e8dee09fbd6e601fcfa74786"
+}

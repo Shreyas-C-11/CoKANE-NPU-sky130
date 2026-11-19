@@ -1,0 +1,6 @@
+{
+  "run_directory": "runs/r10-finalmargin",
+  "source_commit": "d3781842b68d3dfeb6896a010ebe0e5885c9817b",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r9-extractedmargin/01-openroad-resizertimingpostgrt/state_out.json",
+  "parent_checkpoint_sha256": "369d3435fc4db359076fc6a4f35de0874ebbe27b4215f29ca65ab73b8f0de7d0"
+}

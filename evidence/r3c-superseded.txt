@@ -1,0 +1,1 @@
+r3c-slowcorner intentionally stopped after its routing checkpoint was preserved; superseded by explicit-corner repair.

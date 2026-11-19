@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/r8-finalrepair",
+  "source_commit": "462e21a38ca149836fefaddec39a0a66b5ff7080",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r7-fanoutmargin/04-openroad-resizertimingpostgrt/state_out.json",
+  "parent_checkpoint_sha256": "91187c2d0778e800f1405a404737a08c5756c2dd967243cf36d58a6aa7e6babc",
+  "resume_step": "OpenROAD.FinalElectricalRepair"
+}

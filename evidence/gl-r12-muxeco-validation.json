@@ -1,0 +1,23 @@
+{
+  "run": "r12-muxeco",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 7959,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 7959,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "a9532d59c0801b045f79bc75a2c5bfbd0d0d942db5af0c6659997a3842bdafce",
+  "sdf_annotated": false,
+  "waveform_setting": "0",
+  "wrong_expected_value_negative_control": true
+}

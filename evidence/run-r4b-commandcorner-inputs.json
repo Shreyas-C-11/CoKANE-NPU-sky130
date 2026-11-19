@@ -1,0 +1,6 @@
+{
+  "run_directory": "runs/r4b-commandcorner",
+  "source_commit": "f059e431d41f7c97b055c1ec9a1742bcfc78d324",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r3c-slowcorner/41-openroad-checkantennas/state_out.json",
+  "parent_checkpoint_sha256": "d9f44140ab6b563eafe90b8e37ba11e2cba5b7a2093df1d0a1a728b2d243d12d"
+}

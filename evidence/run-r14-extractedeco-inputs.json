@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/r14-extractedeco",
+  "source_commit": "eedcaf00c1f54da5d9cb5445b5335769e8ea7758",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r13-fanoutheadroom/02-openroad-postfanoutreroute/state_out.json",
+  "resume_step": "OpenROAD.PostRouteFanoutRepair",
+  "parent_checkpoint_sha256": "9a0a6c37d5a5a5153d32b81113d950943c981d27444ce38a34f852c9f31a3215"
+}

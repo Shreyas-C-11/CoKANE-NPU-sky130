@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/r11-fanouteco",
+  "source_commit": "713fa3f9307fe752cdcfe9b52a17931dfc9432a3",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r10-finalmargin/03-openroad-detailedrouting/state_out.json",
+  "parent_checkpoint_sha256": "748b57d0ac18cdf37d0105d89e6e201823df44a4236c3fbe8dc44e3d3129d8cd",
+  "resume_step": "OpenROAD.PostRouteFanoutRepair"
+}

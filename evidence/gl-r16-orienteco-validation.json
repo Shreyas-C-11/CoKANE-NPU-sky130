@@ -1,0 +1,23 @@
+{
+  "run": "r16-orienteco",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 7959,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 7959,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "ad12fc19a6cd308c517a7f665d71bb206e66598da94add1d79c3a47829c4162c",
+  "sdf_annotated": false,
+  "waveform_setting": "0",
+  "wrong_expected_value_negative_control": true
+}

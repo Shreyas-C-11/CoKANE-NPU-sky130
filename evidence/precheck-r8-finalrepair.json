@@ -1,0 +1,13 @@
+{
+  "run": "r8-finalrepair",
+  "result": "PASS",
+  "cases": 15,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "sha256": {
+    "tt_um_cokane_soc.gds": "dd0af04086d1994a329a0588c3e966b69b785b7d7ad3299cf89329079206975c",
+    "tt_um_cokane_soc.lef": "ba431fe96a8ae834f5b0920e7bc6ac74e477e6c0d845bcf73cc38b8dfccb473f",
+    "tt_um_cokane_soc.v": "3266724da9e1e11bd461b956c788149bfb29f7541c5f0a97046d5eabfcbbef40"
+  }
+}

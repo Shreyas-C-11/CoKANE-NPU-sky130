@@ -1,0 +1,4 @@
+[WARNING STA-0160] no commands match 'delete_routes'.
+remove_buffers instances  
+DBWIRE_DESTROY=::odb::dbWire_destroy
+DBWIRE_DESTROY2=::odb::dbWire_destroy

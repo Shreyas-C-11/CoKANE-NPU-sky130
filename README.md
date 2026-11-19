@@ -49,14 +49,14 @@ Require functional RTL tests, completed physical flow, required DRC/LVS/antenna 
 
 ## Physical closure recipe
 
-The custom flow in `scripts/qualified-flow.py` adds two integration repairs to the vendored Classic flow. Clock-root fanout is split into four branches. Electrical repair loads the slow library explicitly, reserves fanout headroom for later antenna diodes, and runs again after timing optimization using updated global-route parasitics. Transition and hold repair margins are stricter than the final declared limits. The final limits remain 50 ns clock period, 0.75 ns maximum transition, fanout 10 and 0.2 pF design maximum capacitance, with stricter library pin limits also checked.
+The custom flow in `scripts/qualified-flow.py` adds integration repairs to the vendored Classic flow. Clock-root fanout is split into four branches. Electrical repair loads the slow library explicitly, reserves fanout headroom for later antenna diodes, and runs again after timing optimization using updated global-route parasitics. Post-route data nets above seven loads are split into branches of at most four loads before rerouting, leaving room for antenna diodes. Measured transition hotspots are repaired with stronger muxes and a compatible delay buffer, and remaining diode fanout hotspots are split before rerouting. The final incremental repair invalidates wires for every changed cell location, orientation or master, preserving other detailed wires. The release includes the parent checkpoint for this incremental closure sequence. Transition and hold repair margins are stricter than the final declared limits. The final limits remain 50 ns clock period, 0.75 ns maximum transition, fanout 10 and 0.2 pF design maximum capacitance, with stricter library pin limits also checked.
 
 The exact PDK revision is recorded in `evidence/pdk-version.json`; imported IP/support revisions are in `evidence/source-provenance.json`. Full setup/hold and electrical results must pass all nine configured corners after extraction.
 
 ## Verify a completed run
 
 ```sh
-./scripts/gl-local.sh RUN_TAG
+WAVES=0 ./scripts/gl-local.sh RUN_TAG
 ./scripts/precheck-local.sh RUN_TAG
 python3 scripts/collect-precheck.py RUN_TAG
 .venv/bin/python scripts/qualify.py RUN_TAG

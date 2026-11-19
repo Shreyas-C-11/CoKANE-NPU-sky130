@@ -31,3 +31,5 @@ evidence/gl-exit-code.txt
 verification/
 
 __pycache__/
+
+releases/

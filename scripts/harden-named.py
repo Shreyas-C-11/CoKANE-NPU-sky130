@@ -12,6 +12,7 @@ commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 active={'run_directory':str(run.relative_to(root)),'source_commit':commit}
 if os.getenv('QUALIFY_FROM_STATE'):
  active['parent_checkpoint']=os.environ['QUALIFY_FROM_STATE']
+ active['resume_step']=os.getenv('QUALIFY_FROM_STEP','OpenROAD.SlowCornerRepair')
  active['parent_checkpoint_sha256']=__import__('hashlib').sha256(Path(os.environ['QUALIFY_FROM_STATE']).read_bytes()).hexdigest()
 (root/'evidence/active-run.json').write_text(json.dumps(active,indent=2)+'\n')
 (root/f'evidence/run-{tag}-inputs.json').write_text(json.dumps(active,indent=2)+'\n')

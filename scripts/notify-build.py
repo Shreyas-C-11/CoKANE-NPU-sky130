@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Record build events locally. Does not send mail, chat messages or webhooks."""
 import argparse
+import hashlib
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -59,8 +60,18 @@ def snapshot(running=False, exit_code=None, run_directory=None):
     result['validation_policy'] = policy
     if not policy.get('sdf_required', True):
         result['pending_verification'] = [p for p in result['pending_verification'] if p != 'SDF timing simulation']
-    result['message'] = ('CPU+MAC build: ' + result['status'] +
-                         '. Completion is not full design sign-off.')
+    qualification=read_json(ROOT/f'evidence/qualification-{run.name}.json')
+    if qualification.get('result')=='PASS' and complete and not findings and not missing:
+        matches=True
+        for name,digest in qualification.get('artifacts_sha256',{}).items():
+            path=ROOT/name
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=digest:
+                matches=False
+        if matches and qualification.get('artifacts_sha256'):
+            result['status']='baseline_checks_passed'
+            result['qualified_for_declared_scope']=True
+            result['pending_verification']=[]
+    result['message'] = ('CPU+MAC baseline checks passed for the declared scope.' if result['status']=='baseline_checks_passed' else 'CPU+MAC build: '+result['status']+'. Completion is not full design sign-off.')
     return result
 
 def main():
@@ -70,7 +81,9 @@ def main():
     parser.add_argument('--run-dir')
     args = parser.parse_args()
     result = snapshot(args.running, args.exit_code, args.run_dir)
-    destination = ROOT / 'evidence/build-notification.json'
+    active = read_json(ROOT/'evidence/active-run.json').get('run_directory')
+    is_active = not active or (ROOT/active).resolve()==Path(result['run_directory']).resolve()
+    destination = ROOT / ('evidence/build-notification.json' if is_active else f"evidence/build-notification-{Path(result['run_directory']).name}.json")
     destination.parent.mkdir(exist_ok=True)
     prior = read_json(destination)
     destination.with_suffix('.tmp').write_text(json.dumps(result, indent=2) + '\n')

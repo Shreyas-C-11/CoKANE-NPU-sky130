@@ -1,0 +1,1 @@
+r6-qualified stopped after finding one antenna-induced data fanout violation (fanout638/X: 11 loads, limit 10); superseded by repair with fanout headroom.

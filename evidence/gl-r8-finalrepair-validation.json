@@ -1,0 +1,22 @@
+{
+  "run": "r8-finalrepair",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 7959,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 7959,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "3266724da9e1e11bd461b956c788149bfb29f7541c5f0a97046d5eabfcbbef40",
+  "sdf_annotated": false,
+  "wrong_expected_value_negative_control": true
+}

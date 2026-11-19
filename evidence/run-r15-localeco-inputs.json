@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/r15-localeco",
+  "source_commit": "646b46b8ffbd58f5a22802f38e7a5285723f070a",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r14-extractedeco/02-openroad-postfanoutreroute/state_out.json",
+  "resume_step": "OpenROAD.PostRouteFanoutRepair",
+  "parent_checkpoint_sha256": "cc2b9bcf0229d9a116973b43f7d5a60a29fdea9f687fb178c4d0c39b55f79e50"
+}

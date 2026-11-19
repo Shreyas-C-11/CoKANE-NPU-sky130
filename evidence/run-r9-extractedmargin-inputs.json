@@ -1,0 +1,6 @@
+{
+  "run_directory": "runs/r9-extractedmargin",
+  "source_commit": "eea8c13ba345a1cef5f2c1748d6824bb6da533cf",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/r7-fanoutmargin/03-openroad-repairantennas/state_out.json",
+  "parent_checkpoint_sha256": "c6260b3fdd5d7b982f6fdb65c0053d61b77a8eb47792bb08cc8c2b70da40a093"
+}

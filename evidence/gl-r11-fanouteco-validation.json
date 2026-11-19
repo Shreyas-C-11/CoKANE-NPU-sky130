@@ -1,0 +1,23 @@
+{
+  "run": "r11-fanouteco",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 7959,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 7959,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "699eac0dcfde4ac0cba9c392eab587c0228d888624ea28fefb36d419e48fb3cb",
+  "sdf_annotated": false,
+  "waveform_setting": "0",
+  "wrong_expected_value_negative_control": true
+}
