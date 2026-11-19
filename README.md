@@ -6,6 +6,8 @@ This is an independently verified CPU+MAC development baseline. CoKANE, QSPI and
 
 ## Validation status
 
+Local release `cpu-mac-20mhz-3x4-v1` is qualified for the declared scope. Run `r16-orienteco` passed RTL and functional gate regression, all nine STA corners, electrical limits, routing/layout DRC, LVS, antenna checks and all 15 Tiny Tapeout prechecks. Worst setup/hold slack is +9.179 ns / +0.132 ns at 50 ns. The evidence is bound to exact GDS, LEF and netlist hashes in `evidence/qualification-r16-orienteco.json`.
+
 The accepted qualification scope is in `evidence/validation-policy.json`: RTL, functional gate simulation, nine-corner STA, electrical limits, physical checks and shuttle prechecks. SDF timing qualification is excluded by user agreement because the available simulators do not implement the unmodified SKY130 timing models correctly.
 
 Use the artifact-bound `evidence/qualification-<run>.json` result to identify a qualified run. A LibreLane "Flow complete" message alone is insufficient: electrical findings may be warnings. A run must have a PASS qualification record before it is tagged as a baseline.

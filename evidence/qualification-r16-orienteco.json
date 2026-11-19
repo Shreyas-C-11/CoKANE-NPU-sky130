@@ -1,0 +1,158 @@
+{
+  "run": "r16-orienteco",
+  "result": "PASS",
+  "created_at_utc": "2026-11-19T15:08:32.203664+00:00",
+  "scope": {
+    "scope": "CPU + hybrid MAC baseline at 20 MHz, 3x4 tiles",
+    "required": [
+      "RTL firmware",
+      "functional gate firmware",
+      "nine-corner setup/hold STA",
+      "slew/fanout/capacitance checks",
+      "routing and layout DRC",
+      "LVS",
+      "antenna",
+      "Tiny Tapeout prechecks"
+    ],
+    "sdf_required": false,
+    "sdf_disposition": "User selected STA and functional gate tests on 19 November 2026; available simulators do not qualify the unmodified SKY130 delayed-signal timing model.",
+    "excluded": [
+      "silicon validation",
+      "radiation qualification",
+      "full-chip power/IR signoff",
+      "SDF timing qualification"
+    ]
+  },
+  "source": {
+    "commit": "5a3c2ce958e41be0172344d935f40f772ecac60e",
+    "repo": "local-only",
+    "app": "vendored Tiny Tapeout tools; LibreLane named run"
+  },
+  "checks": {
+    "design__lint_error__count": 0,
+    "design__inferred_latch__count": 0,
+    "synthesis__check_error__count": 0,
+    "route__drc_errors": 0,
+    "magic__drc_error__count": 0,
+    "klayout__drc_error__count": 0,
+    "design__lvs_error__count": 0,
+    "route__antenna_violation__count": 0,
+    "design__max_slew_violation__count": 0,
+    "design__max_fanout_violation__count": 0,
+    "design__max_cap_violation__count": 0,
+    "timing__setup__wns__corner:nom_tt_025C_1v80": 0,
+    "timing__hold__wns__corner:nom_tt_025C_1v80": 0,
+    "design__max_slew_violation__count__corner:nom_tt_025C_1v80": 0,
+    "design__max_fanout_violation__count__corner:nom_tt_025C_1v80": 0,
+    "design__max_cap_violation__count__corner:nom_tt_025C_1v80": 0,
+    "timing__setup__wns__corner:nom_ss_100C_1v60": 0,
+    "timing__hold__wns__corner:nom_ss_100C_1v60": 0,
+    "design__max_slew_violation__count__corner:nom_ss_100C_1v60": 0,
+    "design__max_fanout_violation__count__corner:nom_ss_100C_1v60": 0,
+    "design__max_cap_violation__count__corner:nom_ss_100C_1v60": 0,
+    "timing__setup__wns__corner:nom_ff_n40C_1v95": 0,
+    "timing__hold__wns__corner:nom_ff_n40C_1v95": 0,
+    "design__max_slew_violation__count__corner:nom_ff_n40C_1v95": 0,
+    "design__max_fanout_violation__count__corner:nom_ff_n40C_1v95": 0,
+    "design__max_cap_violation__count__corner:nom_ff_n40C_1v95": 0,
+    "timing__setup__wns__corner:min_tt_025C_1v80": 0,
+    "timing__hold__wns__corner:min_tt_025C_1v80": 0,
+    "design__max_slew_violation__count__corner:min_tt_025C_1v80": 0,
+    "design__max_fanout_violation__count__corner:min_tt_025C_1v80": 0,
+    "design__max_cap_violation__count__corner:min_tt_025C_1v80": 0,
+    "timing__setup__wns__corner:min_ss_100C_1v60": 0,
+    "timing__hold__wns__corner:min_ss_100C_1v60": 0,
+    "design__max_slew_violation__count__corner:min_ss_100C_1v60": 0,
+    "design__max_fanout_violation__count__corner:min_ss_100C_1v60": 0,
+    "design__max_cap_violation__count__corner:min_ss_100C_1v60": 0,
+    "timing__setup__wns__corner:min_ff_n40C_1v95": 0,
+    "timing__hold__wns__corner:min_ff_n40C_1v95": 0,
+    "design__max_slew_violation__count__corner:min_ff_n40C_1v95": 0,
+    "design__max_fanout_violation__count__corner:min_ff_n40C_1v95": 0,
+    "design__max_cap_violation__count__corner:min_ff_n40C_1v95": 0,
+    "timing__setup__wns__corner:max_tt_025C_1v80": 0,
+    "timing__hold__wns__corner:max_tt_025C_1v80": 0,
+    "design__max_slew_violation__count__corner:max_tt_025C_1v80": 0,
+    "design__max_fanout_violation__count__corner:max_tt_025C_1v80": 0,
+    "design__max_cap_violation__count__corner:max_tt_025C_1v80": 0,
+    "timing__setup__wns__corner:max_ss_100C_1v60": 0,
+    "timing__hold__wns__corner:max_ss_100C_1v60": 0,
+    "design__max_slew_violation__count__corner:max_ss_100C_1v60": 0,
+    "design__max_fanout_violation__count__corner:max_ss_100C_1v60": 0,
+    "design__max_cap_violation__count__corner:max_ss_100C_1v60": 0,
+    "timing__setup__wns__corner:max_ff_n40C_1v95": 0,
+    "timing__hold__wns__corner:max_ff_n40C_1v95": 0,
+    "design__max_slew_violation__count__corner:max_ff_n40C_1v95": 0,
+    "design__max_fanout_violation__count__corner:max_ff_n40C_1v95": 0,
+    "design__max_cap_violation__count__corner:max_ff_n40C_1v95": 0
+  },
+  "rtl_result": {
+    "result": "PASS",
+    "positive_boots": 2,
+    "transactions_per_positive_boot": 7959,
+    "negative_control": "Wrong expected accumulator value correctly reaches bad signature",
+    "sdf_annotated": false
+  },
+  "functional_gate_result": {
+    "run": "r16-orienteco",
+    "result": "PASS",
+    "type": "functional_gate_level",
+    "process_exit": 0,
+    "testcases": 1,
+    "boots": [
+      {
+        "seed": 19,
+        "transactions": 7959,
+        "reset": "rst_n"
+      },
+      {
+        "seed": 20,
+        "transactions": 7959,
+        "reset": "ena"
+      }
+    ],
+    "netlist_sha256": "ad12fc19a6cd308c517a7f665d71bb206e66598da94add1d79c3a47829c4162c",
+    "sdf_annotated": false,
+    "waveform_setting": "0",
+    "wrong_expected_value_negative_control": true
+  },
+  "precheck_result": {
+    "run": "r16-orienteco",
+    "result": "PASS",
+    "cases": 15,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "sha256": {
+      "tt_um_cokane_soc.gds": "c85a8087148f143e11e513e7fe1ab58c30074150a91ff3ced01330f621931e42",
+      "tt_um_cokane_soc.lef": "4cb57985cfe4ed963b0d00ca52652b99fb9ae7d7653da2b3a6b268a1a1a76a54",
+      "tt_um_cokane_soc.v": "ad12fc19a6cd308c517a7f665d71bb206e66598da94add1d79c3a47829c4162c"
+    }
+  },
+  "rtl_inputs_match_passing_regression": true,
+  "rtl_sha256": {
+    "src/mac_hybrid_datapath.vh": "e1ce7234d1d8f91b278ae45e36d56928bff5c7ea3abff69f79dd993a831bbe77",
+    "src/mac_residue7_check.sv": "f9d701066fd1334b0acfabc20287f75fc08df3f6276ea5165e770945eba481b7",
+    "src/secded_functions.vh": "d3b8987bd5178992eb0dd24a3824058a19ecd5ac4c08b6c7bb143aec2def4508",
+    "src/picorv32.v": "0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622",
+    "src/mac_wb.v": "b49d699771f60fd672247d1fb02054f686e60437d63dece53db2957d51e2deeb",
+    "src/secded_decoder.sv": "64d590d33b6a27c5b3f389877ca3cda7fba781f8b54c6b7a9d73d5773a26f63e",
+    "src/signed_residue7.sv": "05845758feb41614a2ec2149ec52ade598f94cbe130bf43cd256965629bd7e0e",
+    "src/mac_hybrid.sv": "fefa976f24c40ff309dac77b116e151c00a0d09351ec237d14fed692d0731fc1",
+    "src/secded_encoder.sv": "4d14b3965504131ecfea1d854c5daea787d0dcb07de250c159408f7d3df88227",
+    "src/soc_core.v": "82a728cbf5ff7c5710956320806a44cfd80af129b05e679918db6e51ed2deee9",
+    "src/wb_decoder.v": "b5b0502e49c696c92dace7955cc3b5acbe2613826248aef36e670cf47a89f64d",
+    "src/tt_um_cokane_soc.v": "6fec11f5651da77ed2976664c07ab1bbf1946212361b7cbb7c4707593813ea39",
+    "test/test.py": "ea57715b8f35d2bfc8d3421c160e5b9bf55afffd9936b07069c80f32edec29b1",
+    "test/tb.v": "f694a16bb185741c3f10c7adb00189cefb6df6b8b5fcafd25a97b9238d880ded"
+  },
+  "artifacts_sha256": {
+    "runs/r16-orienteco/final/gds/tt_um_cokane_soc.gds": "c85a8087148f143e11e513e7fe1ab58c30074150a91ff3ced01330f621931e42",
+    "runs/r16-orienteco/final/pnl/tt_um_cokane_soc.pnl.v": "ad12fc19a6cd308c517a7f665d71bb206e66598da94add1d79c3a47829c4162c",
+    "runs/r16-orienteco/final/lef/tt_um_cokane_soc.lef": "4cb57985cfe4ed963b0d00ca52652b99fb9ae7d7653da2b3a6b268a1a1a76a54",
+    "runs/r16-orienteco/final/metrics.json": "e6fe8afa20d641d538ef7b23fd385eb4b77bcfcf292fa307cee572cb9cd4c506",
+    "runs/r16-orienteco/resolved.json": "2eb18bfbac54990a5d8f4a4eca47827941dbe6c7fe92c19466878113f36a4c99",
+    "runs/r16-orienteco/final/commit_id.json": "99aaefcd76e8992f0da8b261275aef93cc2434a0c6995d5e784fa4288bab49b9"
+  },
+  "problems": []
+}

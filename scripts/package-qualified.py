@@ -46,10 +46,18 @@ for p in final.rglob('*'):
 entries['resolved.json']=root/'runs'/run_name/'resolved.json'
 entries['source-README.md']=root/'README.md'
 for p in (root/'evidence').glob('*'):
- if p.is_file() and (run_name in p.name or p.name in ['validation-policy.json','rtl-current-validation.json','rtl-current-results.xml','rtl-current-input-sha256.json','source-provenance.json','pdk-version.json','tool-versions.txt']):entries['evidence/'+p.name]=p
+ if p.is_file() and (run_name in p.name or p.name in ['validation-policy.json','rtl-current-validation.json','rtl-current-results.xml','rtl-current-input-sha256.json','source-provenance.json','pdk-version.json','tool-versions.txt','build-notification.json','rtl-current.log','rtl-current-exit-code.txt']):entries['evidence/'+p.name]=p
 sta_dirs=list((root/'runs'/run_name).glob('*-openroad-stapostpnr'))
 for directory in sta_dirs:
  for p in directory.rglob('*.rpt'):entries['timing/'+str(p.relative_to(directory))]=p
+for directory in (root/'runs'/run_name).iterdir():
+ if not directory.is_dir() or directory.name=='final':continue
+ for p in (directory/'reports').rglob('*'):
+  if p.is_file():entries['physical-reports/'+directory.name+'/'+str(p.relative_to(directory/'reports'))]=p
+ for p in directory.glob('*.rpt'):entries['physical-reports/'+directory.name+'/'+p.name]=p
+pre_reports=root/'verification'/run_name/'precheck/reports'
+for p in pre_reports.rglob('*'):
+ if p.is_file():entries['precheck-reports/'+str(p.relative_to(pre_reports))]=p
 # Waveforms are optional debug outputs and are not release evidence.
 (stage/'SHA256SUMS').write_text(''.join(f'{sha(p)}  {name}\n' for name,p in sorted(entries.items())))
 entries['SHA256SUMS']=stage/'SHA256SUMS'

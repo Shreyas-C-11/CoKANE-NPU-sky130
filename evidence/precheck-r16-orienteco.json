@@ -1,0 +1,13 @@
+{
+  "run": "r16-orienteco",
+  "result": "PASS",
+  "cases": 15,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "sha256": {
+    "tt_um_cokane_soc.gds": "c85a8087148f143e11e513e7fe1ab58c30074150a91ff3ced01330f621931e42",
+    "tt_um_cokane_soc.lef": "4cb57985cfe4ed963b0d00ca52652b99fb9ae7d7653da2b3a6b268a1a1a76a54",
+    "tt_um_cokane_soc.v": "ad12fc19a6cd308c517a7f665d71bb206e66598da94add1d79c3a47829c4162c"
+  }
+}
