@@ -25,8 +25,11 @@ def snapshot(running=False, exit_code=None, run_directory=None):
     log = run / 'flow.log'
     complete = log.is_file() and 'Flow complete.' in log.read_text(errors='replace')
     metrics = read_json(run / 'final/metrics.json')
-    required = ['route__drc_errors', 'magic__drc_error__count',
+    config = read_json(run / 'resolved.json')
+    required = ['design__max_slew_violation__count', 'design__max_fanout_violation__count', 'design__max_cap_violation__count', 'route__drc_errors', 'magic__drc_error__count',
                 'design__lvs_error__count', 'route__antenna_violation__count']
+    if config.get('RUN_KLAYOUT_DRC'):
+        required.append('klayout__drc_error__count')
     keys = required + [k for k in metrics if
         k.startswith(('timing__setup__wns__corner:', 'timing__hold__wns__corner:',
                       'design__max_slew_violation__count',
@@ -37,8 +40,11 @@ def snapshot(running=False, exit_code=None, run_directory=None):
                 (float(v) < 0 if '__wns' in k else float(v) > 0)}
     missing = [k for k in required if k not in metrics]
     for category in ['setup', 'hold']:
-        if not any(k.startswith(f'timing__{category}__wns__corner:') for k in metrics):
-            missing.append(f'timing_{category}_corner_results')
+        corners = config.get('STA_CORNERS', [])
+        if not corners: missing.append('STA_CORNERS')
+        for corner in corners:
+            key = f'timing__{category}__wns__corner:{corner}'
+            if key not in metrics: missing.append(key)
     result.update(flow_complete=complete, checks=selected, findings=findings,
                   missing_checks=missing,
                   pending_verification=['pin-level gate simulation', 'SDF timing simulation',
@@ -49,6 +55,10 @@ def snapshot(running=False, exit_code=None, run_directory=None):
         result['status'] = 'completed_with_findings' if findings or missing else 'physical_checks_passed_pending_verification'
     elif exit_code == 0:
         result['status'] = 'incomplete'
+    policy = read_json(ROOT/'evidence/validation-policy.json')
+    result['validation_policy'] = policy
+    if not policy.get('sdf_required', True):
+        result['pending_verification'] = [p for p in result['pending_verification'] if p != 'SDF timing simulation']
     result['message'] = ('CPU+MAC build: ' + result['status'] +
                          '. Completion is not full design sign-off.')
     return result

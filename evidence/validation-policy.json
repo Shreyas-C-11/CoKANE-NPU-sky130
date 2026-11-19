@@ -1,0 +1,7 @@
+{
+  "scope": "CPU + hybrid MAC baseline at 20 MHz, 3x4 tiles",
+  "required": ["RTL firmware", "functional gate firmware", "nine-corner setup/hold STA", "slew/fanout/capacitance checks", "routing and layout DRC", "LVS", "antenna", "Tiny Tapeout prechecks"],
+  "sdf_required": false,
+  "sdf_disposition": "User selected STA and functional gate tests on 19 November 2026; available simulators do not qualify the unmodified SKY130 delayed-signal timing model.",
+  "excluded": ["silicon validation", "radiation qualification", "full-chip power/IR signoff", "SDF timing qualification"]
+}

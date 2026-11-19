@@ -10,4 +10,5 @@ result=0
 ./scripts/test-local.sh GATES=yes > "evidence/gl-$tag.log" 2>&1 || result=$?
 printf '%s\n' "$result" > "evidence/gl-$tag-exit-code.txt"
 if [ -f test/results.xml ]; then cp test/results.xml "evidence/gl-$tag-results.xml"; fi
+.venv/bin/python scripts/collect-gl.py "$tag"
 exit "$result"
