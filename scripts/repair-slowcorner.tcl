@@ -35,6 +35,9 @@ source $::env(SCRIPTS_DIR)/openroad/common/grt.tcl
 estimate_parasitics -global_routing
 
 # Repair Design
+# Leave two loads of headroom for antenna diodes added later.
+# The declared design limit remains MAX_FANOUT_CONSTRAINT (10).
+set_max_fanout 8 [current_design]
 set arg_list [list]
 lappend arg_list -verbose
 lappend arg_list -max_wire_length $::env(GRT_DESIGN_REPAIR_MAX_WIRE_LENGTH)
@@ -47,6 +50,7 @@ if { [info exists ::env(GRT_DESIGN_REPAIR_BUFFER_GAIN)] } {
     lappend arg_list -buffer_gain $::env(GRT_DESIGN_REPAIR_BUFFER_GAIN)
 }
 log_cmd repair_design {*}$arg_list
+set_max_fanout $::env(MAX_FANOUT_CONSTRAINT) [current_design]
 
 # Re-DPL and GRT
 source $::env(SCRIPTS_DIR)/openroad/common/dpl.tcl

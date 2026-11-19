@@ -76,11 +76,15 @@ async def host_word(d,write_data=False):
     for lane in range(4): result |= (await peek(d,lane|(16 if write_data else 0)))<<(8*lane)
     return result
 
-async def execute(d,seed,disable_reset=False):
+async def execute(d,seed,disable_reset=False,negative_control=False):
     rng=random.Random(seed); d.ena.value=0 if disable_reset else 1; d.rst_n.value=1 if disable_reset else 0
     for _ in range(5): await tick(d)
     d.ena.value=1; d.rst_n.value=1
-    memory={i*4:w for i,w in enumerate(firmware())}; transactions=0
+    words=firmware()
+    if negative_control:
+        assert words[9] == 0x00030313 # first expected value: addi x6,x6,0
+        words[9] |= 1 << 20 # deliberately expect 1 after accumulator clear
+    memory={i*4:w for i,w in enumerate(words)}; transactions=0
     for _ in range(150000):
         status=await peek(d,32)
         assert not status&128, 'CPU trapped'
@@ -100,7 +104,11 @@ async def execute(d,seed,disable_reset=False):
         await tick(d,8); await tick(d)
         transactions+=1
         if writing and address==0x1000:
-            assert memory[0x1000]==0x600d600d, f'Firmware failed: {memory[0x1000]:08x}'
+            expected=0xbad00bad if negative_control else 0x600d600d
+            assert memory[0x1000]==expected, f'Firmware signature: {memory[0x1000]:08x}, expected {expected:08x}'
+            if negative_control:
+                d._log.info('Firmware NEGATIVE_CONTROL_PASS wrong expected value rejected')
+                return
             assert memory[0x1004]==0x1234ab78
             d._log.info('Firmware PASS seed=%d transactions=%d reset=%s',seed,transactions,'ena' if disable_reset else 'rst_n')
             return
@@ -110,3 +118,4 @@ async def execute(d,seed,disable_reset=False):
 async def cpu_mac_firmware(d):
     await execute(d,19)
     await execute(d,20,disable_reset=True)
+    await execute(d,21,negative_control=True)
