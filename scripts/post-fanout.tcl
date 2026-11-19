@@ -1,4 +1,4 @@
-# Reserve three routed-load slots for antenna diodes; final limit remains 10.
+# Repair extracted electrical hotspots; final fanout limit remains 10.
 source $::env(SCRIPTS_DIR)/openroad/common/io.tcl
 read_current_odb
 set_propagated_clock [all_clocks]
@@ -12,7 +12,7 @@ foreach net [$::block getNets] {
  foreach pin [$net getITerms] {
   if {[$pin getIoType] != "OUTPUT"} {lappend loads "[[$pin getInst] getName]/[[$pin getMTerm] getName]"}
  }
- if {[llength $loads] <= 7} {continue}
+ if {[llength $loads] <= 10} {continue}
  set loads [lsort $loads]
  puts "Post-route fanout split: [$net getName] loads=[llength $loads]"
  for {set start 0} {$start<[llength $loads]} {incr start 4} {
@@ -29,6 +29,21 @@ foreach net [$::block getNets] {
   insert_buffer -buffer_cell sky130_fd_sc_hd__buf_8 -load_pins [get_pins $group] -location $location -buffer_name post_eco_buf_$index -net_name post_eco_net_$index
   incr index;incr modified
  }
+}
+# Sizing verified against the parent extracted slow-corner SPEF.
+foreach {name expected replacement} {
+ _06045_ sky130_fd_sc_hd__mux2_1 sky130_fd_sc_hd__mux2_4
+ _06096_ sky130_fd_sc_hd__mux2_1 sky130_fd_sc_hd__mux2_4
+ hold2667 sky130_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__clkdlybuf4s50_2
+} {
+ set inst [$::block findInst $name]
+ if {$inst=="NULL"} {error "Expected electrical hotspot missing: $name"}
+ set current [[$inst getMaster] getName]
+ if {$current==$expected} {
+  replace_cell $name $replacement
+  incr modified
+  puts "Extracted electrical ECO: $name $expected -> $replacement"
+ } elseif {$current!=$replacement} {error "Unexpected cell at $name: $current"}
 }
 if {$modified>0} {
  # Rip up signal wires only; power special-wires and all cells are preserved.
