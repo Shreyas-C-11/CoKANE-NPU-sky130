@@ -6,13 +6,17 @@ This is an independently verified CPU+MAC development baseline. CoKANE, QSPI and
 
 ## Validation status
 
-Pin-only RTL firmware regression passes with random host wait states, both external reset and deselection reset, signed arithmetic, 521-operation accumulator overflow, MAC status polling, byte-enable handling, and external-memory read/write checks. Each boot completes 7,959 host transactions. Physical implementation, gate-level simulation and prechecks remain pending until reports demonstrate completion. Passing RTL is not tapeout sign-off.
+The accepted qualification scope is in `evidence/validation-policy.json`: RTL, functional gate simulation, nine-corner STA, electrical limits, physical checks and shuttle prechecks. SDF timing qualification is excluded by user agreement because the available simulators do not implement the unmodified SKY130 timing models correctly.
+
+Use the artifact-bound `evidence/qualification-<run>.json` result to identify a qualified run. A LibreLane "Flow complete" message alone is insufficient: electrical findings may be warnings. A run must have a PASS qualification record before it is tagged as a baseline.
+
+The regression boots through the physical pins with randomized host stalls, checks signed MAC arithmetic and accumulator overflow, exercises byte writes and memory responses, and restarts using reset and deselection. A negative control deliberately changes an expected value and must reach the firmware failure signature. The test host paces the clock while serving memory; 20 MHz timing closure is established separately by STA.
 
 ## Run locally on the development server
 
 Create `.venv` using Python 3.11 and install `test/requirements.txt`. Then run `scripts/test-local.sh`. The simulator wrappers use the sibling `../tools/oss-cad-suite` installation and avoid its Python environment override. On an ordinary Icarus installation: activate the Python environment and run `make -C test`.
 
-Run `scripts/harden-local.sh` for the existing server LibreLane/PDK setup. This uses sibling `../ttvenv`, `../pyextra`, `../pdk` and `../tools/librelane-devshell`. Build outputs are ignored. `src/config.json` is the authoritative hand-edited flow configuration; generated user/merged configurations are ignored. `tt/` is a bundled support-tool snapshot; provenance is in `evidence/source-provenance.json`.
+Run `scripts/harden-local.sh UNIQUE_RUN_TAG` for the existing server LibreLane/PDK setup. Each run uses a fresh directory and refuses to overwrite previous results. This uses sibling `../ttvenv`, `../pyextra`, `../pdk` and `../tools/librelane-devshell`. Build outputs are ignored. `src/config.json` is the authoritative hand-edited flow configuration; generated user/merged configurations are ignored. `tt/` is a bundled support-tool snapshot; provenance is in `evidence/source-provenance.json`.
 
 ## Host protocol
 
@@ -42,3 +46,22 @@ Require functional RTL tests, completed physical flow, required DRC/LVS/antenna 
 ## Local build notifications
 
 `scripts/harden-local.sh` invokes `scripts/notify-build.py` at start and finish, including failed exits. The handler writes `evidence/build-notification.json` and appends changed states to ignored `evidence/build-events.jsonl`. Run `python3 scripts/notify-build.py` to refresh status for an existing run. Reports distinguish flow completion, tool failure and outstanding physical violations; they never assert full sign-off. The handler records local events only. It has no mail, webhook or Codex background-message integration.
+
+## Physical closure recipe
+
+The custom flow in `scripts/qualified-flow.py` adds two integration repairs to the vendored Classic flow. Clock-root fanout is split into four branches. Electrical repair loads the slow library explicitly, reserves fanout headroom for later antenna diodes, and runs again after timing optimization using updated global-route parasitics. Transition and hold repair margins are stricter than the final declared limits. The final limits remain 50 ns clock period, 0.75 ns maximum transition, fanout 10 and 0.2 pF design maximum capacitance, with stricter library pin limits also checked.
+
+The exact PDK revision is recorded in `evidence/pdk-version.json`; imported IP/support revisions are in `evidence/source-provenance.json`. Full setup/hold and electrical results must pass all nine configured corners after extraction.
+
+## Verify a completed run
+
+```sh
+./scripts/gl-local.sh RUN_TAG
+./scripts/precheck-local.sh RUN_TAG
+python3 scripts/collect-precheck.py RUN_TAG
+.venv/bin/python scripts/qualify.py RUN_TAG
+```
+
+Precheck uses its own `.precheck-venv`, installed from `tt/precheck/requirements.txt`. Gate simulation uses `.venv`, installed from `test/requirements.txt`. Verification records bind their result to the netlist/GDS SHA-256. The qualifier also verifies the hardware/flow sources against the build's recorded Git commit and the RTL inputs against the passing regression.
+
+The exploratory CVC/SDF helper and its failure record are retained for diagnosis; they are not part of the accepted qualification evidence. Radiation/silicon qualification and full-chip power/IR signoff are outside this baseline's scope.
