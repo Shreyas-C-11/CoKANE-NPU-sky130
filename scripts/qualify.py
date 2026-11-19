@@ -29,7 +29,7 @@ for name,digest in initial.items():
   if current!=digest:problems.append('RTL regression input changed: '+name)
 if policy['sdf_required']:problems.append('SDF qualification not implemented by this collector')
 source=load(run/'final/commit_id.json')
-physical_sources=[str(p.relative_to(root)) for p in (root/'src').glob('*') if p.suffix in ['.v','.sv','.vh']]+['src/config.json','info.yaml','scripts/qualified-flow.py','scripts/clock-fanout.tcl','scripts/repair-slowcorner.tcl','scripts/final-electrical.tcl','scripts/post-fanout.tcl']
+physical_sources=[str(p.relative_to(root)) for p in (root/'src').glob('*') if p.suffix in ['.v','.sv','.vh']]+['src/config.json','info.yaml','scripts/qualified-flow.py','scripts/clock-fanout.tcl','scripts/repair-slowcorner.tcl','scripts/final-electrical.tcl','scripts/post-fanout.tcl','scripts/post-transition.tcl']
 for name in physical_sources:
  recorded=subprocess.check_output(['git','show',source['commit']+':'+name],cwd=root)
  if hashlib.sha256(recorded).hexdigest()!=sha(root/name):problems.append('Physical build source changed: '+name)

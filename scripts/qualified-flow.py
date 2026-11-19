@@ -45,13 +45,28 @@ class PostFanoutReroute(DetailedRouting):
             return {},{}
         return super().run(state_in,**kwargs)
 
+@Step.factory.register()
+class PostRouteTransitionRepair(SlowCornerRepair):
+    id='OpenROAD.PostRouteTransitionRepair'
+    name='Post-route Transition Driver Repair'
+    def get_script_path(self):
+        return str(pathlib.Path(__file__).with_name('post-transition.tcl'))
+
+@Step.factory.register()
+class PostTransitionReroute(DetailedRouting):
+    id='OpenROAD.PostTransitionReroute'
+    name='Post-transition Detailed Routing'
+    def run(self,state_in,**kwargs):
+        if not state_in.metrics.get('design__postroute_transition_repairs',0):return {},{}
+        return super().run(state_in,**kwargs)
+
 class QualifiedCPUFlow(Classic):
     Steps=Classic.Steps.copy()
     Steps.insert(Steps.index(CTS)+1,ClockFanoutRepair)
     Steps[Steps.index(RepairDesignPostGRT)]=SlowCornerRepair
     Steps.insert(Steps.index(ResizerTimingPostGRT)+1,FinalElectricalRepair)
     index=Steps.index(DetailedRouting)+1
-    Steps[index:index]=[PostRouteFanoutRepair,PostFanoutReroute]
+    Steps[index:index]=[PostRouteFanoutRepair,PostFanoutReroute,PostRouteTransitionRepair,PostTransitionReroute]
 
 root=pathlib.Path(__file__).resolve().parent.parent
 pdk_root=pathlib.Path(os.environ['PDK_ROOT'])
