@@ -299,6 +299,11 @@ class Project:
         return Repo(self.local_dir).commit().hexsha
 
     def get_tt_tools_version(self):
+        # This baseline vendors the support snapshot rather than a Git submodule.
+        provenance = os.path.join(self.local_dir, "evidence", "source-provenance.json")
+        if not os.path.exists(os.path.join(self.local_dir, "tt", ".git")) and os.path.isfile(provenance):
+            with open(provenance) as source:
+                return "vendored " + json.load(source)["tt_support"]
         repo = Repo(os.path.join(self.local_dir, "tt"))
         if repo.head.is_detached:
             ref = next(
