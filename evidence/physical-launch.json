@@ -1,0 +1,15 @@
+{
+  "source_commit": "ec2406afc6e2d72002086148cd85816489f60def",
+  "run_directory": "/home/jagat/.sys/cokane-soc/cpu-mac-baseline/runs/wokwi",
+  "clock_period_ns": 50,
+  "die_area_um": [
+    0,
+    0,
+    508.76,
+    511.36
+  ],
+  "placement_density_target_pct": 55,
+  "early_placement_utilization": 0.322645,
+  "status": "running; not signed off",
+  "note": "Early metrics precede clock-tree synthesis, timing repair and routing."
+}
