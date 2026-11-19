@@ -10,9 +10,9 @@ ROOT = Path(__file__).resolve().parent.parent
 def read_json(path):
     return json.loads(path.read_text()) if path.is_file() else {}
 
-def snapshot(running=False, exit_code=None):
+def snapshot(running=False, exit_code=None, run_directory=None):
     active = read_json(ROOT / 'evidence/active-run.json')
-    run = ROOT / active.get('run_directory', 'runs/wokwi')
+    run = ROOT / (run_directory or active.get('run_directory', 'runs/wokwi'))
     commit = read_json(run / 'final/commit_id.json').get('commit')
     result = {'recorded_at_utc': datetime.now(timezone.utc).isoformat(),
               'run_directory': str(run), 'source_commit': commit,
@@ -57,8 +57,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--running', action='store_true')
     parser.add_argument('--exit-code', type=int)
+    parser.add_argument('--run-dir')
     args = parser.parse_args()
-    result = snapshot(args.running, args.exit_code)
+    result = snapshot(args.running, args.exit_code, args.run_dir)
     destination = ROOT / 'evidence/build-notification.json'
     destination.parent.mkdir(exist_ok=True)
     prior = read_json(destination)

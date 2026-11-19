@@ -16,5 +16,5 @@ class QualifiedCPUFlow(Classic):
     Steps=Classic.Steps.copy()
     Steps.insert(Steps.index(CTS)+1,ClockFanoutRepair)
 
-flow=QualifiedCPUFlow(sys.argv[1],pdk_root=os.environ['PDK_ROOT'])
+flow=QualifiedCPUFlow(sys.argv[1],pdk_root=os.environ['PDK_ROOT'],pdk='sky130A')
 flow.start(tag=sys.argv[2],_force_run_dir=sys.argv[3])
