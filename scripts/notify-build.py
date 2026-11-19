@@ -11,7 +11,8 @@ def read_json(path):
     return json.loads(path.read_text()) if path.is_file() else {}
 
 def snapshot(running=False, exit_code=None):
-    run = ROOT / 'runs/wokwi'
+    active = read_json(ROOT / 'evidence/active-run.json')
+    run = ROOT / active.get('run_directory', 'runs/wokwi')
     commit = read_json(run / 'final/commit_id.json').get('commit')
     result = {'recorded_at_utc': datetime.now(timezone.utc).isoformat(),
               'run_directory': str(run), 'source_commit': commit,
@@ -63,7 +64,7 @@ def main():
     prior = read_json(destination)
     destination.with_suffix('.tmp').write_text(json.dumps(result, indent=2) + '\n')
     destination.with_suffix('.tmp').replace(destination)
-    if any(prior.get(k) != result.get(k) for k in ['status','source_commit','findings','missing_checks']):
+    if any(prior.get(k) != result.get(k) for k in ['status','source_commit','findings','missing_checks','run_directory']):
         with (ROOT / 'evidence/build-events.jsonl').open('a') as events:
             events.write(json.dumps(result) + '\n')
     print(result['message'])
