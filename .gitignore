@@ -27,3 +27,5 @@ evidence/active-run.json
 evidence/gl-exit-code.txt
 
 .precheck-venv/
+
+verification/

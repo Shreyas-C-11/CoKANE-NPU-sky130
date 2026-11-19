@@ -1,0 +1,17 @@
+{
+  "run": "wokwi",
+  "type": "functional_gate_level",
+  "result": "PASS",
+  "testcases": 1,
+  "reset_modes": [
+    "rst_n",
+    "ena"
+  ],
+  "transactions_per_boot": 7959,
+  "netlist_sha256": "53ba9bae6e0ce9d392fc415dd3123bd8f5dc90376736a382b808aa6fc6d47d7f",
+  "notes": [
+    "JUnit result independently checked after simulation.",
+    "Shell wrapper was edited while running, so its exit marker is invalid; captured simulator results and separate check_results invocation passed.",
+    "Not SDF annotated."
+  ]
+}
