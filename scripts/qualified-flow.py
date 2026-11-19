@@ -2,7 +2,7 @@
 import os,pathlib,sys,json
 from librelane.state import State
 from librelane.flows.classic import Classic
-from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT
+from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT
 from librelane.steps import Step
 
 @Step.factory.register()
@@ -22,10 +22,18 @@ class SlowCornerRepair(RepairDesignPostGRT):
     def get_script_path(self):
         return str(pathlib.Path(__file__).with_name('repair-slowcorner.tcl'))
 
+@Step.factory.register()
+class FinalElectricalRepair(SlowCornerRepair):
+    id='OpenROAD.FinalElectricalRepair'
+    name='Final Slow Corner Electrical Repair'
+    def get_script_path(self):
+        return str(pathlib.Path(__file__).with_name('final-electrical.tcl'))
+
 class QualifiedCPUFlow(Classic):
     Steps=Classic.Steps.copy()
     Steps.insert(Steps.index(CTS)+1,ClockFanoutRepair)
     Steps[Steps.index(RepairDesignPostGRT)]=SlowCornerRepair
+    Steps.insert(Steps.index(ResizerTimingPostGRT)+1,FinalElectricalRepair)
 
 root=pathlib.Path(__file__).resolve().parent.parent
 pdk_root=pathlib.Path(os.environ['PDK_ROOT'])
@@ -37,6 +45,6 @@ flow=QualifiedCPUFlow(sys.argv[1],pdk_root=str(pdk_root),pdk='sky130A')
 options={}
 if os.getenv('QUALIFY_FROM_STATE'):
     options['with_initial_state']=State.loads(pathlib.Path(os.environ['QUALIFY_FROM_STATE']).read_text())
-    options['frm']='OpenROAD.SlowCornerRepair'
+    options['frm']=os.getenv('QUALIFY_FROM_STEP','OpenROAD.SlowCornerRepair')
 if os.getenv('QUALIFY_TO'): options['to']=os.environ['QUALIFY_TO']
 flow.start(tag=sys.argv[2],_force_run_dir=sys.argv[3],**options)
