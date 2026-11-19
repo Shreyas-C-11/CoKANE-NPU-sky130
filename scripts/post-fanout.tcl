@@ -12,7 +12,7 @@ proc mark_inst_nets {inst} {
   if {$net!="NULL" && [$net getSigType]!="POWER" && [$net getSigType]!="GROUND"} {dict set dirty_nets [$net getName] $net}
  }
 }
-foreach inst [$::block getInsts] {dict set original [$inst getName] [list [$inst getLocation] [[$inst getMaster] getName]]}
+foreach inst [$::block getInsts] {dict set original [$inst getName] [list [$inst getLocation] [$inst getOrient] [[$inst getMaster] getName]]}
 foreach {name expected replacement} {
  _11238_ sky130_fd_sc_hd__dfxtp_2 sky130_fd_sc_hd__dfxtp_4
  _08538_ sky130_fd_sc_hd__a21o_2 sky130_fd_sc_hd__a21o_4
@@ -32,7 +32,7 @@ if {$modified>0} {
  source $::env(SCRIPTS_DIR)/openroad/common/dpl.tcl
  foreach inst [$::block getInsts] {
   set name [$inst getName]
-  set current [list [$inst getLocation] [[$inst getMaster] getName]]
+  set current [list [$inst getLocation] [$inst getOrient] [[$inst getMaster] getName]]
   if {![dict exists $original $name] || [dict get $original $name]!=$current} {mark_inst_nets $inst}
  }
  dict for {name net} $dirty_nets {
