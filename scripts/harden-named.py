@@ -10,7 +10,11 @@ run=root/'runs'/tag
 if run.exists(): raise SystemExit(f'Refusing to overwrite {run}')
 commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 active={'run_directory':str(run.relative_to(root)),'source_commit':commit}
+if os.getenv('QUALIFY_FROM_STATE'):
+ active['parent_checkpoint']=os.environ['QUALIFY_FROM_STATE']
+ active['parent_checkpoint_sha256']=__import__('hashlib').sha256(Path(os.environ['QUALIFY_FROM_STATE']).read_bytes()).hexdigest()
 (root/'evidence/active-run.json').write_text(json.dumps(active,indent=2)+'\n')
+(root/f'evidence/run-{tag}-inputs.json').write_text(json.dumps(active,indent=2)+'\n')
 subprocess.run([sys.executable,'scripts/notify-build.py','--run-dir',str(run),'--running'],check=True)
 subprocess.run([sys.executable,'tt/tt_tool.py','--create-user-config'],check=True)
 run.mkdir(parents=True)
