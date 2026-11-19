@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "positive_boots": 2,
+  "transactions_per_positive_boot": 7959,
+  "negative_control": "Wrong expected accumulator value correctly reaches bad signature",
+  "sdf_annotated": false
+}

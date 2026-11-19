@@ -1,0 +1,19 @@
+{
+  "src/config.json": "14410e2afed8620cabf6a47e44eb3224f8a2a7e5faa276eb44e3f9674a1b27ab",
+  "src/mac_hybrid_datapath.vh": "e1ce7234d1d8f91b278ae45e36d56928bff5c7ea3abff69f79dd993a831bbe77",
+  "src/mac_residue7_check.sv": "f9d701066fd1334b0acfabc20287f75fc08df3f6276ea5165e770945eba481b7",
+  "src/secded_functions.vh": "d3b8987bd5178992eb0dd24a3824058a19ecd5ac4c08b6c7bb143aec2def4508",
+  "src/picorv32.v": "0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622",
+  "src/mac_wb.v": "b49d699771f60fd672247d1fb02054f686e60437d63dece53db2957d51e2deeb",
+  "src/secded_decoder.sv": "64d590d33b6a27c5b3f389877ca3cda7fba781f8b54c6b7a9d73d5773a26f63e",
+  "src/signed_residue7.sv": "05845758feb41614a2ec2149ec52ade598f94cbe130bf43cd256965629bd7e0e",
+  "src/mac_hybrid.sv": "fefa976f24c40ff309dac77b116e151c00a0d09351ec237d14fed692d0731fc1",
+  "src/secded_encoder.sv": "4d14b3965504131ecfea1d854c5daea787d0dcb07de250c159408f7d3df88227",
+  "src/soc_core.v": "82a728cbf5ff7c5710956320806a44cfd80af129b05e679918db6e51ed2deee9",
+  "src/wb_decoder.v": "b5b0502e49c696c92dace7955cc3b5acbe2613826248aef36e670cf47a89f64d",
+  "src/tt_um_cokane_soc.v": "6fec11f5651da77ed2976664c07ab1bbf1946212361b7cbb7c4707593813ea39",
+  "test/test.py": "ea57715b8f35d2bfc8d3421c160e5b9bf55afffd9936b07069c80f32edec29b1",
+  "test/tb.v": "f694a16bb185741c3f10c7adb00189cefb6df6b8b5fcafd25a97b9238d880ded",
+  "test/Makefile": "e8c18a99ad06ff13a1c666fa8cb48dbce8a2fa89da21edcf817fc5ba359185b8",
+  "info.yaml": "7b3bc07d73f16e4e72f98e4c48f125441dbecb8ee676395a41eff31e3c96120c"
+}

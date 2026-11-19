@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Require artifact-bound functional and physical evidence for the declared scope."""
 from datetime import datetime,timezone
-import hashlib,json,pathlib,sys
+import hashlib,json,pathlib,sys,subprocess
 root=pathlib.Path(__file__).resolve().parent.parent;tag=sys.argv[1];run=root/'runs'/tag
 load=lambda p:json.loads(p.read_text())
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
@@ -28,6 +28,11 @@ for name,digest in initial.items():
   current=sha(root/name);rtl_files[name]=current
   if current!=digest:problems.append('RTL regression input changed: '+name)
 if policy['sdf_required']:problems.append('SDF qualification not implemented by this collector')
+source=load(run/'final/commit_id.json')
+physical_sources=[str(p.relative_to(root)) for p in (root/'src').glob('*') if p.suffix in ['.v','.sv','.vh']]+['src/config.json','info.yaml','scripts/qualified-flow.py','scripts/clock-fanout.tcl','scripts/repair-slowcorner.tcl','scripts/final-electrical.tcl']
+for name in physical_sources:
+ recorded=subprocess.check_output(['git','show',source['commit']+':'+name],cwd=root)
+ if hashlib.sha256(recorded).hexdigest()!=sha(root/name):problems.append('Physical build source changed: '+name)
 files=[run/'final/gds/tt_um_cokane_soc.gds',run/'final/pnl/tt_um_cokane_soc.pnl.v',run/'final/lef/tt_um_cokane_soc.lef',run/'final/metrics.json',run/'resolved.json',run/'final/commit_id.json']
 result={'run':tag,'result':'PASS' if not problems else 'FAIL','created_at_utc':datetime.now(timezone.utc).isoformat(),'scope':policy,'source':load(run/'final/commit_id.json'),'checks':checks,'functional_gate_result':gl,'precheck_result':pre,'rtl_inputs_match_passing_regression':not any('RTL regression input' in p for p in problems),'rtl_sha256':rtl_files,'artifacts_sha256':{str(p.relative_to(root)):sha(p) for p in files},'problems':problems}
 (root/f'evidence/qualification-{tag}.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2));raise SystemExit(0 if not problems else 1)
