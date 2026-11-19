@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import hashlib,json,pathlib,re,sys,xml.etree.ElementTree as ET
 root=pathlib.Path(__file__).resolve().parent.parent;tag=sys.argv[1]
-xml=root/f'evidence/gl-{tag}-results.xml';log=root/f'evidence/gl-{tag}.log';netlist=root/f'runs/{tag}/final/pnl/tt_um_cokane_soc.pnl.v'
+xml=root/f'evidence/gl-{tag}-results.xml';log=root/f'evidence/gl-{tag}.log';netlist=pathlib.Path(sys.argv[2]) if len(sys.argv)>2 else root/f'runs/{tag}/final/pnl/tt_um_cokane_soc.pnl.v'
 r=ET.parse(xml).getroot();cases=r.findall('.//testcase');text=log.read_text(errors='replace')
 rc=int((root/f'evidence/gl-{tag}-exit-code.txt').read_text())
 boots=re.findall(r'Firmware PASS seed=(\d+) transactions=(\d+) reset=(\w+)',text)
