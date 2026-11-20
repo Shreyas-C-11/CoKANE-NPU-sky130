@@ -1,0 +1,42 @@
+{
+  "run": "ck-signoff-r4",
+  "scope": "Physical review only; final gate inference pending",
+  "clock_period_ns": 50,
+  "tiles": "5x4",
+  "setup_worst_slack_ns": 0.41911719725521773,
+  "hold_worst_slack_ns": 0.1293890586851695,
+  "rtl_and_firmware_changes": false,
+  "electrical_limit_waivers": false,
+  "antenna_property_notes": {
+    "unused_inputs_without_gate_area": [
+      "ui_in[6]",
+      "ui_in[7]"
+    ],
+    "constant_zero_outputs_without_diffusion_area": [
+      "uio_out[0]",
+      "uio_out[1]",
+      "uio_out[2]",
+      "uio_out[3]",
+      "uio_out[4]",
+      "uio_out[5]",
+      "uio_out[6]",
+      "uio_out[7]",
+      "uio_oe[0]",
+      "uio_oe[1]",
+      "uio_oe[2]",
+      "uio_oe[3]",
+      "uio_oe[4]",
+      "uio_oe[5]",
+      "uio_oe[6]",
+      "uio_oe[7]"
+    ],
+    "verification": "Matches frozen top-level RTL and final LEF; routed antenna violation count is zero"
+  },
+  "exclusions": [
+    "SDF simulation",
+    "full-chip power/IR/EM",
+    "foundry release",
+    "silicon/radiation validation",
+    "trained-model accuracy"
+  ]
+}

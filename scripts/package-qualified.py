@@ -58,6 +58,7 @@ entries['SIGNOFF.md']=root/'SIGNOFF.md'
 for p in (root/'evidence/cokane').rglob('*'):
  if p.is_file():entries['evidence/cokane/'+str(p.relative_to(root/'evidence/cokane'))]=p
 for p in (root/'evidence').glob('*'):
+ if p.name.startswith(('signoff-handler-','signoff-progress-')):continue
  if p.is_file() and (run_name in p.name or p.name in ['validation-policy.json','rtl-current-validation.json','rtl-current-results.xml','rtl-current-input-sha256.json','source-provenance.json','pdk-version.json','tool-versions.txt','frozen-prototype.json','build-notification.json','rtl-current.log','rtl-current-exit-code.txt']):entries['evidence/'+p.name]=p
 sta_dirs=list((root/'runs'/run_name).glob('*-openroad-stapostpnr'))
 for directory in sta_dirs:

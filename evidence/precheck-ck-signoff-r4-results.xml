@@ -1,0 +1,19 @@
+<testsuites>
+  <testsuite name="Tiny Tapeout Prechecks">
+    <testcase name="Magic DRC" time="253.2" />
+    <testcase name="KLayout FEOL" time="82.28" />
+    <testcase name="KLayout BEOL" time="224.18" />
+    <testcase name="KLayout offgrid" time="30.96" />
+    <testcase name="KLayout pin label overlapping drawing" time="10.45" />
+    <testcase name="KLayout zero area" time="3.79" />
+    <testcase name="KLayout Checks" time="0.6" />
+    <testcase name="Pin check" time="0.4" />
+    <testcase name="Boundary check" time="0.28" />
+    <testcase name="Power pin check" time="0.03" />
+    <testcase name="Layer check" time="0.26" />
+    <testcase name="Cell name check" time="0.12" />
+    <testcase name="urpm/nwell check" time="3.18" />
+    <testcase name="Analog pin check" time="0.0" />
+    <testcase name="Verilog syntax check" time="16.22" />
+  </testsuite>
+</testsuites>

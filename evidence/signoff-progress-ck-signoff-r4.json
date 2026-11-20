@@ -1,0 +1,29 @@
+{
+  "run": "ck-signoff-r4",
+  "status": "PHYSICAL_AND_PRECHECKS_PASS_FULL_GATE_INFERENCE_PENDING",
+  "snapshot_utc": "2026-11-20T07:41:39.052246+00:00",
+  "frozen_tag": "cokane-working-prototype-v0.2",
+  "frozen_commit": "db530b7fe46207c3720513d0c4b0d0d69ce45dee",
+  "rtl_and_firmware_preserved": true,
+  "tiles": "5x4",
+  "clock_period_ns": 50,
+  "setup_worst_slack_ns": 0.41911719725521773,
+  "hold_worst_slack_ns": 0.1293890586851695,
+  "nine_corner_timing_electrical_pass": true,
+  "drc_lvs_routed_antenna_violations": 0,
+  "basic_gate_validation": "PASS",
+  "prechecks": {
+    "result": "PASS",
+    "cases": 15
+  },
+  "pending": [
+    "Final-netlist full compiled pin-host inference: frozen synthetic model",
+    "Final-netlist full compiled pin-host inference: zero model",
+    "Artifact-bound final collector and verified release package"
+  ],
+  "handler": "scripts/finish-cokane-signoff.py",
+  "live_status": "evidence/signoff-handler-ck-signoff-r4.json",
+  "source_root": "/home/jagat/.sys/cokane-soc/cokane-dev",
+  "trained_model_accuracy_verified": false,
+  "performance_optimization_deferred": true
+}

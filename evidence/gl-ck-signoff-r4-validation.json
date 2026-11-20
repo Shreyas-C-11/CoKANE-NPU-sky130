@@ -1,0 +1,23 @@
+{
+  "run": "ck-signoff-r4",
+  "result": "PASS",
+  "type": "functional_gate_level",
+  "process_exit": 0,
+  "testcases": 1,
+  "boots": [
+    {
+      "seed": 19,
+      "transactions": 8971,
+      "reset": "rst_n"
+    },
+    {
+      "seed": 20,
+      "transactions": 8975,
+      "reset": "ena"
+    }
+  ],
+  "netlist_sha256": "10efb99a1ce91ff7275b61e7382946c9d37c505203e5d66527ca3cbd95ce4665",
+  "sdf_annotated": false,
+  "waveform_setting": "0",
+  "wrong_expected_value_negative_control": true
+}

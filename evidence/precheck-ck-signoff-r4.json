@@ -1,0 +1,13 @@
+{
+  "run": "ck-signoff-r4",
+  "result": "PASS",
+  "cases": 15,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "sha256": {
+    "tt_um_cokane_soc.gds": "d165be9884d91be828dd27547ccb93793f2321a548b22bcfca44ab19d8b8d769",
+    "tt_um_cokane_soc.lef": "39ca7de3fa7dd34244f89f14b89071960c66ba4f8d4b21ee75dbacf109d4a70f",
+    "tt_um_cokane_soc.v": "10efb99a1ce91ff7275b61e7382946c9d37c505203e5d66527ca3cbd95ce4665"
+  }
+}
