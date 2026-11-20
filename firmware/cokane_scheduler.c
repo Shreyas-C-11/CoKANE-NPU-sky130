@@ -51,10 +51,24 @@ static void begin(ck_scheduler *s, unsigned batch, unsigned terms, unsigned bits
     wr(s,CK_BATCH,batch); wr(s,CK_TERMS,terms); wr(s,CK_INPUT_BITS,bits);
     wr(s,CK_COMMAND,CK_BEGIN);
 }
-static void load_function(ck_scheduler *s, const int8_t *table, unsigned depth) {
-    wr(s,CK_COMMAND,CK_LUT_CLEAR); wr(s,CK_LUT_ADDR,0);
-    for (unsigned i=0;i<depth;i++) ck_write(CK_LUT_DATA,(uint8_t)table[i]&63u);
-    s->stats.mmio_writes+=depth; s->stats.lut_entries+=depth;
+static void load_function(ck_scheduler *s, const int8_t *table, unsigned depth,
+                          const uint8_t *codes, unsigned lanes) {
+    wr(s,CK_COMMAND,CK_LUT_CLEAR);
+    if (depth==16) {
+        wr(s,CK_LUT_ADDR,0);
+        for (unsigned i=0;i<depth;i++) ck_write(CK_LUT_DATA,(uint8_t)table[i]&63u);
+        s->stats.mmio_writes+=depth; s->stats.lut_entries+=depth;
+    } else {
+        unsigned loaded=0;
+        for (unsigned i=0;i<lanes;i++) {
+            unsigned j=0;
+            while (j<i && codes[j]!=codes[i]) j++;
+            if (j<i) continue;
+            ck_write(CK_LUT_ADDR,codes[i]);
+            ck_write(CK_LUT_DATA,(uint8_t)table[codes[i]]&63u); loaded++;
+        }
+        s->stats.mmio_writes+=loaded*2; s->stats.lut_entries+=loaded;
+    }
 }
 static int finalize(ck_scheduler *s, int pool) {
     wr(s,CK_COMMAND,CK_FINALIZE); int rc=wait_idle(s); if (rc) return rc;
@@ -93,10 +107,13 @@ int ck_convolution_pool(ck_scheduler *s, const ck_conv_pool_descriptor *d) {
             for (unsigned ic=0;ic<cin;ic++)
                 for (unsigned ky=0;ky<3;ky++)
                     for (unsigned kx=0;kx<3;kx++,table+=depth) {
-                        load_function(s,table,depth);
+                        uint8_t codes[8];
                         unsigned offset=ic*w*h+ky*w+kx;
                         for (unsigned lane=0;lane<lanes;lane++)
-                            ck_write(CK_INPUT+lane*4,(uint8_t)d->input[anchors[lane]+offset]&mask);
+                            codes[lane]=(uint8_t)d->input[anchors[lane]+offset]&mask;
+                        load_function(s,table,depth,codes,lanes);
+                        for (unsigned lane=0;lane<lanes;lane++)
+                            ck_write(CK_INPUT+lane*4,codes[lane]);
                         s->stats.mmio_writes+=lanes; s->stats.input_values+=lanes;
                         wr(s,CK_COMMAND,CK_ADD); rc=wait_idle(s);
                         if (rc) return stop_failed_job(s,rc);
@@ -123,8 +140,9 @@ int ck_dense(ck_scheduler *s, const ck_dense_descriptor *d) {
     for (unsigned oc=0;oc<d->outputs;oc++) {
         begin(s,1,d->features,d->input_bits);
         for (unsigned f=0;f<d->features;f++,table+=depth) {
-            load_function(s,table,depth);
-            wr(s,CK_INPUT,(uint8_t)d->input[f]&(depth-1)); s->stats.input_values++;
+            uint8_t code=(uint8_t)d->input[f]&(depth-1);
+            load_function(s,table,depth,&code,1);
+            wr(s,CK_INPUT,code); s->stats.input_values++;
             wr(s,CK_COMMAND,CK_ADD); rc=wait_idle(s);
             if (rc) return stop_failed_job(s,rc);
         }

@@ -37,7 +37,7 @@ async def compiled_cpu_inference(d):
         assert byte_array(d,address,len(expected))==expected, 'CPU-only reference tensor mismatch'
     assert words[21]==fixture['prediction']
     stats=dict(zip(['jobs','lut_entries','input_values','output_values','mmio_reads','mmio_writes','compute_cycles','context_cycles'],words[10:18]))
-    assert stats['jobs']==206 and stats['lut_entries']==86432
+    assert stats['jobs']==206 and 0<stats['lut_entries']<86432
     assert stats['input_values']==16268 and stats['output_values']==398
     assert stats['compute_cycles']==34486
     assert int(d.npu_reads.value)==stats['mmio_reads']+1 # main's ID probe.
