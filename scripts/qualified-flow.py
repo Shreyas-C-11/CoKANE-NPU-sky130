@@ -1,3 +1,5 @@
+# Baseline flow contains instance-specific ECOs for a different netlist.
+raise SystemExit("Historical CPU+MAC ECO flow is disabled for CoKANE. Use a new generic flow after RTL/synthesis validation.")
 #!/usr/bin/env python3
 import os,pathlib,sys,json
 from librelane.state import State

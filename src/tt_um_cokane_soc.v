@@ -1,4 +1,4 @@
-// CPU+MAC baseline. All host inputs are synchronous to clk.
+// CPU + MAC + programmable CoKANE development. All host inputs are synchronous to clk.
 // ui[1:0]: byte lane; ui[2]: capture uio_in into memory read-data lane;
 // ui[3]: acknowledge external-memory request; ui[4]: show write data (else address);
 // ui[5]: show status (overrides ui[4]); ui[7:6]: reserved.
@@ -23,6 +23,8 @@ module tt_um_cokane_soc (
   end
  end
  wire trap, s_we, cyc_ext, stb_ext, cyc_ck, stb_ck, cyc_per, stb_per;
+ wire [31:0] dat_ck;
+ wire ack_ck;
  wire [31:0] s_adr, s_dat;
  wire [3:0] s_sel;
  soc_core #(.COMPRESSED(0)) u_soc (
@@ -30,8 +32,12 @@ module tt_um_cokane_soc (
   .s_adr(s_adr), .s_dat(s_dat), .s_we(s_we), .s_sel(s_sel),
   .cyc_ext(cyc_ext), .stb_ext(stb_ext), .cyc_ck(cyc_ck), .stb_ck(stb_ck),
   .cyc_per(cyc_per), .stb_per(stb_per),
-  .dat_ext(read_data), .dat_ck(32'b0), .dat_per(32'b0),
-  .ack_ext(ui_in[3] & stb_ext), .ack_ck(cyc_ck & stb_ck), .ack_per(cyc_per & stb_per)
+  .dat_ext(read_data), .dat_ck(dat_ck), .dat_per(32'b0),
+  .ack_ext(ui_in[3] & stb_ext), .ack_ck(ack_ck), .ack_per(cyc_per & stb_per)
+ );
+ cokane_wb u_cokane (
+  .clk(clk), .rst(~active_reset_n), .cyc(cyc_ck), .stb(stb_ck), .we(s_we),
+  .adr(s_adr), .dat_i(s_dat), .sel(s_sel), .dat_o(dat_ck), .ack(ack_ck)
  );
  wire [31:0] host_word = ui_in[4] ? s_dat : s_adr;
  assign uo_out = ui_in[5] ? {trap,cyc_ext,stb_ext,s_we,s_sel} : host_word[8*ui_in[1:0] +: 8];

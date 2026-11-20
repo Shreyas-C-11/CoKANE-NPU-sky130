@@ -50,8 +50,34 @@ def firmware():
     p.label('wrap_loop'); p.li(2,1); p.store(2,1,8); poll()
     p.addi(7,7,-1); p.bne(7,0,'wrap_loop')
     p.load(3,1,16); expected=((521*127*127+(1<<23))%(1<<24))-(1<<23); check(3,expected)
-    # Reserved/unmapped regions complete and read zero in this baseline.
-    for base in [0x10000000,0x30000000,0x40000000]:
+    # CoKANE executes through the real CPU / Wishbone path.
+    p.li(8,0x10000000); p.load(3,8); check(3,0x434b0100)
+    p.li(2,4); p.store(2,8,8) # abort any previous context
+    p.li(2,8); p.store(2,8,12) # eight positions
+    p.li(2,3); p.store(2,8,16) # three contributions
+    p.li(2,6); p.store(2,8,36) # six-bit addresses
+    p.li(2,1); p.store(2,8,8) # BEGIN
+    for f,value in enumerate([31,31,-32]):
+        p.li(2,7); p.store(2,8,8) # invalidate table
+        p.li(2,0); p.store(2,8,32)
+        p.li(12,value); p.li(7,64); p.label('ck_table'+str(f))
+        p.store(12,8,40); p.addi(7,7,-1); p.bne(7,0,'ck_table'+str(f))
+        p.addi(9,8,64); p.li(7,8); p.li(2,0); p.label('ck_inputs'+str(f))
+        p.store(2,9); p.addi(9,9,4); p.addi(7,7,-1); p.bne(7,0,'ck_inputs'+str(f))
+        p.li(2,2); p.store(2,8,8)
+        p.label('ck_wait'+str(f)); p.load(3,8,4); p.andi(4,3,1); p.bne(4,0,'ck_wait'+str(f))
+        p.andi(4,3,8); check(4,0)
+    p.li(2,3); p.store(2,8,8)
+    p.label('ck_finalize'); p.load(3,8,4); p.andi(4,3,1); p.bne(4,0,'ck_finalize')
+    p.andi(4,3,31); check(4,20) # done and results valid; inactive, idle, no error
+    p.load(3,8,192); check(3,30)
+    p.load(3,8,220); check(3,30) # last lane and last contribution
+    p.load(3,8,24); check(3,56) # 3 * 16 + 8 compute clocks
+    p.li(2,6); p.store(2,8,8)
+    p.label('ck_pool'); p.load(3,8,4); p.andi(4,3,1); p.bne(4,0,'ck_pool')
+    p.load(3,8,224); check(3,30); p.load(3,8,228); check(3,30)
+    # Reserved/unmapped regions still complete and read zero.
+    for base in [0x30000000,0x40000000]:
         p.li(8,base); p.load(3,8); check(3,0)
     # Exercise host memory writes, reads and byte enables.
     p.li(2,0x12345678); p.store(2,10,4); p.load(3,10,4); check(3,0x12345678)

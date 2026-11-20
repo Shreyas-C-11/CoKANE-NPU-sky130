@@ -1,17 +1,18 @@
 project:
-  title:        "CPU + hybrid MAC baseline"
+  title:        "CPU + MAC + programmable CoKANE"
   author:       "Shreyas Chaudhari"
   discord:      ""
-  description: "PicoRV32 RV32E + hybrid MAC with synchronous host-memory interface"
+  description: "PicoRV32 + hybrid MAC + six-bit scheduled KAN lookup engine"
   language:     "Verilog"
   clock_hz:     20000000
-  tiles: "3x4"
+  tiles: "5x4"
   top_module:  "tt_um_cokane_soc"
   source_files:
     - "tt_um_cokane_soc.v"
     - "soc_core.v"
     - "wb_decoder.v"
     - "mac_wb.v"
+    - "cokane_wb.v"
     - "picorv32.v"
     - "mac_hybrid.sv"
     - "mac_residue7_check.sv"
