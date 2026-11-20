@@ -19,3 +19,9 @@ COMPILE_ARGS += -g2012
 endif
 PLUSARGS += +firmware=$(FIRMWARE)
 include $(shell cocotb-config --makefiles)/Makefile.sim
+
+# Cocotb needs only explicit testbench observations, not cell internals.
+ifeq ($(SIM),verilator)
+COMPILE_ARGS := $(filter-out --public-flat-rw,$(COMPILE_ARGS))
+BUILD_ARGS += -j4
+endif

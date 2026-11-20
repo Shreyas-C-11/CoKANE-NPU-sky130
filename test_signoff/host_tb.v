@@ -15,14 +15,17 @@ module tb;
   .uo_out(uo_out),.uio_out(uio_out),.uio_oe(uio_oe));
  always #25 clk=~clk;
  initial begin repeat(8) @(negedge clk); rst_n=1; end
- reg [31:0] mem [0:65535];
+ reg [31:0] mem [0:65535] /* verilator public_flat_rw */;
  reg [1023:0] image_file;
  integer j,lane=0,state=0;
  reg [31:0] address=0,word_data=0;
  reg writing=0;
  reg [3:0] byte_sel=0;
- reg finished=0,fault=0;
- reg [63:0] cycles=0,reads=0,writes=0;
+ reg finished /* verilator public_flat_rw */ =0;
+ reg fault /* verilator public_flat_rw */ =0;
+ reg [63:0] cycles /* verilator public_flat_rw */ =0;
+ reg [63:0] reads /* verilator public_flat_rw */ =0;
+ reg [63:0] writes /* verilator public_flat_rw */ =0;
  initial begin
   for(j=0;j<65536;j=j+1) mem[j]=0;
   if(!$value$plusargs("firmware=%s",image_file)) $fatal(1,"Missing firmware");
