@@ -44,6 +44,14 @@ final=root/'runs'/run_name/'final'
 for p in final.rglob('*'):
  if p.is_file():entries['final/'+str(p.relative_to(final))]=p
 entries['resolved.json']=root/'runs'/run_name/'resolved.json'
+for name in ['firmware.elf','firmware.hex','firmware.bin','fixture.json','inference_fixture.h']:
+ p=root/'verification/inference'/name
+ if p.is_file():entries['firmware-evidence/original/'+name]=p
+for model in ['synthetic','zero']:
+ for name in ['firmware.hex','fixture.json','model-identity.json']:
+  p=root/f'verification/signoff-{run_name}-{model}'/name
+  entries[f'firmware-evidence/{model}/{name}']=p
+
 entries['source-README.md']=root/'README.md'
 entries['NPU_Specs.md']=root/'NPU_Specs.md'
 entries['SIGNOFF.md']=root/'SIGNOFF.md'
