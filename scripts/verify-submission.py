@@ -40,4 +40,9 @@ for rel, item in manifest['files'].items():
         else:
             target.write_bytes(data)
     print('QUALIFIED_LAYOUT_MATCH', path.name, digest)
+images = json.loads((root/'host/images.json').read_text())
+for name, digest in images['sha256'].items():
+    assert hashlib.sha256((root/'host'/name).read_bytes()).hexdigest() == digest, name
+build = json.loads((root/'evidence/cokane/inference-build.json').read_text())
+assert images['sha256']['inference.hex'] == build['artifacts_sha256']['firmware.hex']
 print('SUBMISSION_ARTIFACTS_VERIFIED', manifest['qualified_tag'])
