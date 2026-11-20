@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/ck-signoff-r3",
+  "source_commit": "9e3268cb594b767c72623d0cd91c01b624159096",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cokane-dev/runs/ck-signoff-r2/03-openroad-detailedrouting/state_out.json",
+  "resume_step": "OpenROAD.ExtractedClosure",
+  "parent_checkpoint_sha256": "f7d2783ff0c1c1d5a99b54ff99e24d05b4a0bc10be3d2085948b6581930ac71c"
+}

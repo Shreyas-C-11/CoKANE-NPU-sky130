@@ -1,0 +1,47 @@
+{
+  "result": "PASS",
+  "scope": "Compiled frozen firmware, full synthetic inference through actual chip pins; functional simulation, no SDF",
+  "model": "zero",
+  "simulator": "Verilator",
+  "tensor_counts": [
+    338,
+    50,
+    10
+  ],
+  "cycles": 20073818,
+  "external_reads": 1482872,
+  "external_writes": 69996,
+  "firmware_sha256": "65c21d547728971f092516dfdec07a6064115464d171af54c5435a4a16678dbb",
+  "fixture_sha256": "a590423fd06abc4ad34a3aede451915342755158406147ed28d49e8b7f094de3",
+  "physical_timing_qualified": false,
+  "model_identity": {
+    "model": "zero",
+    "frozen_commit": "db530b7fe46207c3720513d0c4b0d0d69ce45dee",
+    "original_firmware_sha256": "05f89efa37cacfea317fb34db4b4d498066069f300efab1a3ecf6490bea0251d",
+    "firmware_sha256": "65c21d547728971f092516dfdec07a6064115464d171af54c5435a4a16678dbb",
+    "fixture_sha256": "a590423fd06abc4ad34a3aede451915342755158406147ed28d49e8b7f094de3",
+    "modified_readonly_lut_ranges": [
+      [
+        "fixture_conv1",
+        39700,
+        288
+      ],
+      [
+        "fixture_conv2",
+        37396,
+        2304
+      ],
+      [
+        "fixture_dense",
+        5396,
+        32000
+      ]
+    ],
+    "executable_instructions_modified": false
+  },
+  "harness_sha256": {
+    "test_signoff/host_tb.v": "5e19f6ef16a7a5041a0c2538b24a7733fe530a17e606c59da4ae2975b52ab8b6",
+    "test_signoff/Makefile": "6ba8e79a04047140b1d420ff031ee0e1b6010aba3a8bfdeae279171e71b4c004",
+    "test_signoff/test_host_inference.py": "e86533ffb333b9679ce882bc621a554e77405d28ba884b7782a0df916a115d85"
+  }
+}

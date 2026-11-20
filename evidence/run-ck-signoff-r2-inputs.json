@@ -1,0 +1,7 @@
+{
+  "run_directory": "runs/ck-signoff-r2",
+  "source_commit": "14754e059fded03eb4294938a0666c3f97208336",
+  "parent_checkpoint": "/home/jagat/.sys/cokane-soc/cokane-dev/runs/ck-signoff-r1/45-openroad-resizertimingpostgrt/state_out.json",
+  "resume_step": "OpenROAD.FinalElectricalRepair",
+  "parent_checkpoint_sha256": "cf47a718d0e927f9dcab83b524a8fe997407cc9e613e0e22931fa81172791187"
+}
