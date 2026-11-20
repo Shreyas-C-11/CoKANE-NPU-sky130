@@ -156,7 +156,7 @@ async def independent_convolution_pool_dense(d):
     function-major in pooled batches, exercising layout and channel identity.
     """
     b=Bus(d); await b.reset(); rng=random.Random(731)
-    image=[[[rng.randrange(16) for _ in range(10)] for _ in range(10)]]
+    image=[[[rng.randrange(16) for _ in range(28)] for _ in range(28)]]
     async def layer(image,cout,bits):
         cin=len(image); h=len(image[0]); w=len(image[0][0]); oh=h-2; ow=w-2
         funcs=[[[rng.randrange(-4,5) for _ in range(1<<bits)] for _ in range(cin*9)] for _ in range(cout)]
@@ -193,13 +193,64 @@ async def independent_convolution_pool_dense(d):
     l1=await layer(image,2,4); l2=await layer(l1,2,6)
     features=[v for channel in l2 for row in channel for v in row]
     scores=[]; expected=[]
-    for cls in range(3):
+    assert len(features)==50
+    for cls in range(10):
         tables=[[rng.randrange(-32,32) for _ in range(64)] for _ in features]
         expected.append(sat(sum(t[x&63] for t,x in zip(tables,features))))
         await b.begin(1,len(features))
         for table,x in zip(tables,features): await b.table(table); await b.add([x&63])
         await b.command(FINAL); await b.idle(); scores.extend(await b.results(1))
     assert scores==expected
-    # Negative control verifies that a changed expectation is actually rejected.
-    assert scores!=[expected[0]+1]+expected[1:]
-    d._log.info('COKANE_TENSOR_PASS layers=2 dense_classes=3 transfers=%d',b.transfers)
+    d._log.info('COKANE_TENSOR_PASS image=28x28 layers=2 features=50 dense_classes=10 transfers=%d',b.transfers)
+
+@cocotb.test()
+async def abort_reset_and_bus_boundaries(d):
+    b=Bus(d)
+    # Cancel/reset in every busy state; no operation may later publish stale data.
+    for action in ['abort','reset']:
+        for target in [1,2,3,4]:
+            await b.reset(); await b.begin(8,1); await b.table([5]*64)
+            await b.inputs([0]*8)
+            if target in [3,4]:
+                await b.command(ADD); await b.idle()
+            if target==4:
+                await b.command(FINAL); await b.idle()
+            command=ADD if target in [1,2] else FINAL if target==3 else POOL
+            # Drive an accepted command without Bus.access's trailing idle edge.
+            d.adr.value=0x10000008; d.dat_i.value=command; d.sel.value=15
+            d.we.value=1; d.cyc.value=1; d.stb.value=1
+            await b.tick(); assert int(d.ack.value)==1
+            d.cyc.value=0; d.stb.value=0; d.we.value=0
+            if target==2: await b.tick() # READ_LUT -> ACCUMULATE
+            assert int(d.dut.state.value)==target
+            # For abort, wait out ack without consuming the target state:
+            # present abort on its target-state edge; suppress the old ack at
+            # the previous falling edge using an idle cycle for target=2 only.
+            if action=='reset':
+                d.rst.value=1; await b.tick(); d.rst.value=0
+            else:
+                # Wait out the preceding ack, then align to the desired state.
+                if int(d.ack.value): await b.tick()
+                if target==1: await b.tick() # ACCUMULATE -> next READ_LUT
+                assert int(d.dut.state.value)==target
+                await b.command(ABORT)
+            for _ in range(20): await b.tick()
+            assert await b.read(STATUS)==0
+            assert await b.partials(8)==[0]*8
+            assert await b.results(8)==[0]*8
+    await b.reset()
+    # No cycle/strobe conjunction -> no side effect, no acknowledgment.
+    for cyc,stb in [(0,1),(1,0)]:
+        d.cyc.value=cyc; d.stb.value=stb; d.we.value=1; d.sel.value=15
+        d.adr.value=0x1000000c; d.dat_i.value=1
+        for _ in range(3): await b.tick(); assert int(d.ack.value)==0
+    d.cyc.value=0; d.stb.value=0; d.we.value=0
+    assert await b.read(12)==8
+    # Hold through the acknowledgment-clearing cycle: one accepted write only.
+    d.cyc.value=1; d.stb.value=1; d.we.value=1; d.sel.value=15
+    d.adr.value=0x10000028; d.dat_i.value=7
+    await b.tick(); assert int(d.ack.value)==1
+    await b.tick(); assert int(d.ack.value)==0
+    d.cyc.value=0; d.stb.value=0; d.we.value=0; await b.tick()
+    assert await b.read(32)==1
+    d._log.info('COKANE_BOUNDARIES_PASS')

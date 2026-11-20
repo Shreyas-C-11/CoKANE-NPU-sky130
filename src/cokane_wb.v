@@ -36,16 +36,16 @@ module cokane_wb (
  wire [11:0] contribution = {{6{lut_value[5]}},lut_value};
  wire signed [11:0] updated_sum = psum[lane[2:0]] + $signed(contribution);
  reg inputs_ready;
- integer v;
+ integer v, n, k;
  always @* begin
   inputs_ready = 1;
-  for (integer n=0;n<8;n=n+1)
+  for (n=0;n<8;n=n+1)
    if (n < batch && (!input_written[n] || !lut_written[inputs[n]])) inputs_ready=0;
  end
  reg signed [5:0] pool_max;
  always @* begin
   pool_max = 6'sb100000;
-  for (integer k=0;k<4;k=k+1)
+  for (k=0;k<4;k=k+1)
    if ($signed(results[{lane[0],2'b00}+k]) > pool_max)
     pool_max = results[{lane[0],2'b00}+k];
  end

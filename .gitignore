@@ -33,3 +33,6 @@ verification/
 __pycache__/
 
 releases/
+
+test_cokane/sim_build/
+test_cokane/results.xml

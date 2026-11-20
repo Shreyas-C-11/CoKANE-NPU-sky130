@@ -23,8 +23,10 @@ static inline int ck_wait(unsigned budget) {
     return -2;
 }
 /* Logical table function is supplied in raw two's-complement code order. */
-static inline void ck_load_function(const int8_t *table, unsigned bits) {
+static inline int ck_load_function(const int8_t *table, unsigned bits) {
+    if (bits!=4 && bits!=6) return -1;
     ck_write(CK_COMMAND,CK_LUT_CLEAR); ck_write(CK_LUT_ADDR,0);
     for (unsigned i=0;i<(1u<<bits);++i) ck_write(CK_LUT_DATA,(uint8_t)table[i]&63u);
+    return 0;
 }
 #endif
