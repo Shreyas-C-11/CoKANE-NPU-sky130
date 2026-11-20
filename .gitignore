@@ -39,3 +39,6 @@ test_cokane/results.xml
 
 test_inference/sim_build/
 test_inference/results.xml
+
+test_signoff/sim_build/
+test_signoff/results.xml
