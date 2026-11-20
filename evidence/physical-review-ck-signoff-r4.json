@@ -1,6 +1,6 @@
 {
   "run": "ck-signoff-r4",
-  "scope": "Physical review only; final gate inference pending",
+  "scope": "Physical review; final gate inference and prechecks also passed",
   "clock_period_ns": 50,
   "tiles": "5x4",
   "setup_worst_slack_ns": 0.41911719725521773,

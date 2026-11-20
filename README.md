@@ -4,7 +4,7 @@ Development branch for a SKY130 5x4-tile integration at a 20 MHz target. See [NP
 
 The implementation adds one 64x6-bit writable LUT bank, eight signed 12-bit partial sums, a shared lookup/adder datapath, final six-bit saturation and signed pooling. The CPU gathers windows and moves tables/feature maps through the existing host-backed memory service. There is no DMA or full-model on-chip memory.
 
-This integrated design is **not physically qualified**. The inherited `cpu-mac-20mhz-3x4-v1` tag and historical evidence describe the CPU+MAC baseline only. The new qualification flow uses independent placement/routing and artifact-bound verification; historical baseline ECO scripts are unused.
+This frozen integrated design **passed the declared digital block qualification** in `ck-signoff-r4` (5x4, 20 MHz). See SIGNOFF.md and its artifact-bound report. The inherited `cpu-mac-20mhz-3x4-v1` tag and historical evidence describe the CPU+MAC baseline only. The new qualification flow uses independent placement/routing and artifact-bound verification; historical baseline ECO scripts are unused.
 
 Current implementation and test results are recorded under `evidence/cokane/`. The original supplied FPGA sources remain in the sibling `CKAN/` folder.
 
@@ -22,4 +22,4 @@ Selective six-bit LUT loading reduces entry writes from 86,432 to 27,976 without
 
 ## Preserved prototype and qualification
 
-The working prototype is preserved at `cokane-working-prototype-v0.2` (`db530b7`). The separate `feature/cokane-performance` worktree retains it for later performance and trained-model work. The `signoff/cokane-v0.2` branch qualifies the same RTL and firmware in 5x4 tiles at 20 MHz. Physical cell sizing and routing may change; the frozen functional sources may not. See [SIGNOFF.md](SIGNOFF.md) for the required gates and scope. Current qualification is in progress; a hash-bound `evidence/qualification-RUN_TAG.json` is required before declaring a pass.
+The working prototype is preserved at `cokane-working-prototype-v0.2` (`db530b7`). The separate `feature/cokane-performance` worktree retains it for later performance and trained-model work. The `signoff/cokane-v0.2` branch qualifies the same RTL and firmware in 5x4 tiles at 20 MHz. Physical cell sizing and routing may change; the frozen functional sources may not. See [SIGNOFF.md](SIGNOFF.md) for the required gates and scope. Qualification passed for the scope in `evidence/qualification-ck-signoff-r4.json`; see SIGNOFF.md for exclusions.

@@ -1,6 +1,6 @@
 {
   "scope": "Frozen CPU + MAC + CoKANE digital block qualification, SKY130A, 5x4 tiles, 20 MHz",
-  "status": "IN_PROGRESS",
+  "status": "QUALIFIED_FOR_DECLARED_SCOPE",
   "frozen_tag": "cokane-working-prototype-v0.2",
   "required": [
     "frozen RTL/firmware identity",

@@ -222,3 +222,7 @@ The user has deferred performance improvement and trained-model accuracy. The ex
 Tag `cokane-working-prototype-v0.2` identifies commit `db530b7fe46207c3720513d0c4b0d0d69ce45dee`. A separate performance worktree, Git bundle, full prototype archive and SHA-256 manifest preserve this starting point. `scripts/check-frozen-prototype.py` rejects changes to the frozen RTL, firmware and fixture generator.
 
 The qualification branch closes physical implementation at the existing electrical limits, verifies all nine RC/PVT corners, and runs the exact final gate netlist through both basic firmware and full compiled pin-host inference. The additional all-zero LUT model checks that a valid but uninformative classifier still completes. Model usefulness and integer execution correctness are separate validation targets. All 15 Tiny Tapeout prechecks and artifact-bound reports are required; the detailed sequence and exclusions are in SIGNOFF.md.
+
+### Qualified frozen milestone
+
+Run `ck-signoff-r4` passed the declared 5x4 / 20 MHz digital block qualification. Worst extracted setup/hold slacks: +0.419117 / +0.129389 ns. All nine timing corners, electrical limits, DRC/LVS/antenna, 15 prechecks, basic gate firmware and complete synthetic/zero-model pin-host gate inference passed. See SIGNOFF.md and `evidence/qualification-ck-signoff-r4.json` for hashes and exact scope. Trained accuracy and performance improvements are deferred.
