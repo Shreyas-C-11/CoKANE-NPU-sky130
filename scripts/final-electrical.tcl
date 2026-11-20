@@ -38,18 +38,18 @@ estimate_parasitics -global_routing
 # Leave two loads of headroom for antenna diodes added later.
 # The declared design limit remains MAX_FANOUT_CONSTRAINT (10).
 set_max_fanout 7 [current_design]
-set arg_list [list]
-lappend arg_list -verbose
-lappend arg_list -max_wire_length $::env(GRT_DESIGN_REPAIR_MAX_WIRE_LENGTH)
-lappend arg_list -slew_margin $::env(GRT_DESIGN_REPAIR_MAX_SLEW_PCT)
-lappend arg_list -cap_margin $::env(GRT_DESIGN_REPAIR_MAX_CAP_PCT)
+set repair_design_args [list]
+lappend repair_design_args -verbose
+lappend repair_design_args -max_wire_length $::env(GRT_DESIGN_REPAIR_MAX_WIRE_LENGTH)
+lappend repair_design_args -slew_margin $::env(GRT_DESIGN_REPAIR_MAX_SLEW_PCT)
+lappend repair_design_args -cap_margin $::env(GRT_DESIGN_REPAIR_MAX_CAP_PCT)
 if { [info exists ::env(GRT_DESIGN_REPAIR_MAX_UTILIZATION)] } {
-    lappend arg_list -max_utilization $::env(GRT_DESIGN_REPAIR_MAX_UTILIZATION)
+    lappend repair_design_args -max_utilization $::env(GRT_DESIGN_REPAIR_MAX_UTILIZATION)
 }
 if { [info exists ::env(GRT_DESIGN_REPAIR_BUFFER_GAIN)] } {
-    lappend arg_list -buffer_gain $::env(GRT_DESIGN_REPAIR_BUFFER_GAIN)
+    lappend repair_design_args -buffer_gain $::env(GRT_DESIGN_REPAIR_BUFFER_GAIN)
 }
-log_cmd repair_design {*}$arg_list
+log_cmd repair_design {*}$repair_design_args
 set_max_fanout $::env(MAX_FANOUT_CONSTRAINT) [current_design]
 
 # Re-DPL and GRT
@@ -67,7 +67,7 @@ for {set pass 0} {$pass < 3} {incr pass} {
  set remaining [expr {[sta::max_slew_violation_count]+[sta::max_capacitance_violation_count]+[sta::max_fanout_violation_count]}]
  puts "Final electrical pass $pass: $remaining violations"
  if {$remaining==0} {break}
- log_cmd repair_design {*}$arg_list
+ log_cmd repair_design {*}$repair_design_args
  source $::env(SCRIPTS_DIR)/openroad/common/dpl.tcl
  source $::env(SCRIPTS_DIR)/openroad/common/grt.tcl
  estimate_parasitics -global_routing
