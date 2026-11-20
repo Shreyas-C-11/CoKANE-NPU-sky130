@@ -18,7 +18,7 @@ test/gate_level_netlist.v
 *.elf
 *.hex
 
-.venv/
+.venv
 
 evidence/build-events.jsonl
 evidence/build-notification.tmp

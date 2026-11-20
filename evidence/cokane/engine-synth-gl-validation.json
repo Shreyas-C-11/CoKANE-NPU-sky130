@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "scope": "Standalone mapped engine arithmetic/protocol functional simulation; no SDF or timing qualification",
+  "netlist_sha256": "397191be3421586d40666a71eb7dea3e5b180b835a6da92388517efb14945891",
+  "test_sha256": "e8884390afeb6e5baf834898f98f7a4b631441f741814f4b99af0cfd10020d60",
+  "cases": 1
+}

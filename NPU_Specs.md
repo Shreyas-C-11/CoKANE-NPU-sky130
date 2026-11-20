@@ -130,7 +130,7 @@ Error codes: 1 BUSY, 2 STATE, 3 CONFIG, 4 MISSING_DATA (input or referenced LUT 
 
 First validation profile: 28x28x1, 3x3 conv 1->2, pool to 13x13x2, 3x3 conv 2->2, pool to 5x5x2, flatten to 50 values, dense KAN 50->10, CPU argmax. Pooled feature storage is 338 bytes and 50 bytes using one byte per value. No full unpooled map is necessary when batches group pooling windows.
 
-The initial software profile validates input images up to 32x32, convolution Cin up to 4 and Cout up to 32. Hardware does not parse those shapes; it enforces the 8-lane / 64-term / 4-or-6-bit micro-job limits. The layer count is limited by available external storage and firmware, not instantiated layers. Larger networks must obey the total-term bound; splitting into multiple ADD calls does not permit exceeding 64 contributions. No DMA, on-chip full-model memory, autonomous window generator, hardware line buffer, interrupt, softmax, on-chip training or FPGA streaming adapter is claimed.
+The target software profile will validate input images up to 32x32, convolution Cin up to 4 and Cout up to 32. Hardware does not parse those shapes; it enforces the 8-lane / 64-term / 4-or-6-bit micro-job limits. The layer count is limited by available external storage and firmware, not instantiated layers. Larger networks must obey the total-term bound; splitting into multiple ADD calls does not permit exceeding 64 contributions. No DMA, on-chip full-model memory, autonomous window generator, hardware line buffer, interrupt, softmax, on-chip training or FPGA streaming adapter is claimed.
 
 ## 7. Verification and implementation gates
 
@@ -147,4 +147,32 @@ Performance reports must distinguish compute cycles, context elapsed cycles, tab
 
 Active implementation: `CoKANE/`, branch `feature/cokane-programmable`, derived from frozen CPU+MAC tag. `CKAN/` remains the supplied reference. The copy of this document at `CoKANE/NPU_Specs.md` is committed with the implementation; keep the root copy synchronized.
 
-At specification creation: architecture agreed; implementation and verification underway. A source build or passing RTL regression is not physical qualification. Test and synthesis evidence will identify the implemented milestone and remaining work.
+Milestone 1: the lookup/reduction/pooling RTL, CPU integration, firmware register helpers and synthetic tensor reference schedule are implemented. Complete layer-descriptor firmware and trained-model export remain future work. A source build or passing RTL regression is not physical qualification.
+
+## 9. First build milestone (20 November 2026)
+
+| Check | Observed result |
+|---|---|
+| Standalone RTL | PASS: three test groups; arithmetic/protocol, full synthetic 28x28 two-layer profile with 50->10 head, and reset/abort/bus boundaries |
+| CPU integration | PASS: two pin-only firmware boots with random host waits; both reset paths; existing MAC checks retained; deliberately wrong expectation rejected |
+| Saturation negative control | PASS: unchanged test rejects a deliberately broken RTL mutant that clips 62 to 31 during accumulation |
+| Mapped engine functional simulation | PASS: arithmetic/protocol regression against the exact mapped standalone netlist; no SDF |
+| C firmware header | PASS: C11 syntax with gcc -Wall -Wextra -Werror; not a compiled full inference program |
+| Filtered SKY130 synthesis | PASS: no latches/unmapped logic; engine 3,741 cells, 47,658.208 square micrometres; combined 17,708 Yosys-counted cells, 174,172.0448 square micrometres |
+| Physical timing/layout | NOT RUN for this integrated prototype |
+| Trained-model accuracy | NOT VERIFIED; tensor tests use deterministic synthetic tables |
+
+Area includes mapped storage, selection and control logic, not only the 60-byte core subtotal. Engine mapping uses the default ABC strategy; the combined first footprint estimate uses ABC fast mapping. Both exclude the pinned PDK synthesis/placement exclusion lists. These values exclude placement, clock-tree/hold/electrical repair, antenna diodes and filler. They establish a starting point, not physical fit or 20 MHz timing closure. `evidence/cokane/prototype-validation.json` binds results to source and report hashes.
+
+On the existing development server, from `/home/jagat/.sys/cokane-soc/cokane-dev`:
+
+```sh
+bash scripts/test-cokane.sh
+bash scripts/test-cokane-cpu.sh
+bash scripts/test-cokane-negative.sh
+bash scripts/synth-cokane.sh
+bash scripts/test-cokane-synth-gl.sh
+python3 scripts/check-cokane-milestone.py
+```
+
+The server reuses the baseline Python environment through an ignored `.venv` symlink. CAD/PDK installations remain outside Git. Synthesis reproduces from the pinned library; mapped artifacts are in ignored `verification/cokane-synth/`. Baseline instance-specific physical ECO execution is deliberately blocked in this branch. The next physical implementation needs a new generic 5x4 flow and new qualification evidence.

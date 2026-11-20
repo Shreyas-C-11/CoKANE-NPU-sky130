@@ -1,0 +1,6 @@
+{
+  "result": "PASS",
+  "scope": "C11 header syntax only, gcc -Wall -Wextra -Werror",
+  "sha256": "8559f12391a07eaf37110c31ea732bef4dbefbc7d4e01d937384de49933f6ca6",
+  "compiler": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
+}

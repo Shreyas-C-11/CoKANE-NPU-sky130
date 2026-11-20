@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "cases": 3,
+  "input_manifest": "unit-inputs.json",
+  "scope": [
+    "Wishbone arithmetic/protocol",
+    "synthetic integer 28x28 two-convolution/pooling layers + 50->10 KAN",
+    "reset, abort and bus boundary checks"
+  ],
+  "trained_model_accuracy_verified": false
+}

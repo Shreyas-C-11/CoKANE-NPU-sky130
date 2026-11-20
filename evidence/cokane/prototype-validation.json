@@ -1,0 +1,41 @@
+{
+  "result": "PASS",
+  "milestone": "RTL prototype and synthesis feasibility",
+  "created_at_utc": "2026-11-20T05:46:22.091559+00:00",
+  "rtl_source_commit": "cde42274883285c2421867c6aa8c05dce834fa57",
+  "physically_qualified": false,
+  "trained_model_accuracy_verified": false,
+  "statistics": {
+    "engine": {
+      "num_cells": 3741,
+      "area": 47658.208,
+      "sequential_area": 16697.264
+    },
+    "integrated": {
+      "num_cells": 17708,
+      "area": 174172.0448,
+      "sequential_area": 41541.0912
+    }
+  },
+  "report_sha256": {
+    "unit-validation.json": "d552a505e4db9fae144cd2e7043875922243d5251e35796fb33d2bf66b16cc9b",
+    "unit-inputs.json": "47591070c9b6a5c68733f73d0d48ac7157e7539f8b6ca3a2705ee4a4492c9f66",
+    "unit-results.xml": "c0a233a8a1d53295fe2751ff58244273f6cb8889706b1e74846b458faaa6d2f8",
+    "cpu-validation.json": "c921ad16283a9c9b5c1ab09df3fb5d84b75c7070432a0b7a0680fa5dbff73a3e",
+    "cpu-results.xml": "f9cfe7c270dd317583fa698f4085ac36ba083293f5fa73cb2dd32acef85021f8",
+    "negative-control.json": "037374afa6e86ca3eae42053f0862c0fbe4e92e4564fdcdc45b8a31c1eee83f7",
+    "engine-synth-gl-validation.json": "3256e680c69f04e427a7d77185d7b78226b30f304ace8037f9a40f9f9a086960",
+    "engine-synth-gl-results.xml": "83b067e05f29e6639be9f29ee7a3cd82bea80750ecd0d71de4ab749b38e2b958",
+    "synthesis-validation.json": "fe57916157bb786dd038dd34a0118d2adcd8d6547e1f79f1dfe2aa34899f5b93",
+    "engine-stat.json": "43cc6c2dbb6b0ce2ae903113ec7f7221c5c3502fbbdcf7de2dc6cd4466a8884c",
+    "integrated-stat.json": "d64ea845345bb842d43e507aacc81f2ca3906e72fe707e22cc7fecb3599eddee",
+    "firmware-header-validation.json": "bd17ae51a457bdb7799afca725ecb5ecaf1f517056421b990f6e45e4031a13ac"
+  },
+  "pending": [
+    "Complete layer-descriptor firmware and trained-model exporter/accuracy validation",
+    "Fresh 5x4 physical implementation",
+    "Integrated post-route functional gate simulation",
+    "Nine-corner STA and electrical limits at 50 ns",
+    "DRC/LVS/antenna and Tiny Tapeout prechecks"
+  ]
+}
