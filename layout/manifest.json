@@ -1,0 +1,25 @@
+{
+  "qualified_tag": "cokane-20mhz-5x4-v0.2",
+  "qualified_commit": "f597a5231d43dd7ae9e46341f9d40d4e490d904e",
+  "qualification_record": "evidence/qualification-ck-signoff-r4.json",
+  "pdk": "sky130A",
+  "pdk_revision": "8afc8346a57fe1ab7934ba5a6056ea8b43078e71",
+  "tiles": "5x4",
+  "files": {
+    "layout/tt_um_cokane_soc.gds.gz": {
+      "sha256": "785e77931a183faeae205ca03ff8d1cf64a560d292060c7eed94df906eb16021",
+      "qualified_sha256": "d165be9884d91be828dd27547ccb93793f2321a548b22bcfca44ab19d8b8d769",
+      "compressed": true
+    },
+    "layout/tt_um_cokane_soc.lef": {
+      "sha256": "39ca7de3fa7dd34244f89f14b89071960c66ba4f8d4b21ee75dbacf109d4a70f",
+      "qualified_sha256": "39ca7de3fa7dd34244f89f14b89071960c66ba4f8d4b21ee75dbacf109d4a70f",
+      "compressed": false
+    },
+    "layout/tt_um_cokane_soc.pnl.v": {
+      "sha256": "10efb99a1ce91ff7275b61e7382946c9d37c505203e5d66527ca3cbd95ce4665",
+      "qualified_sha256": "10efb99a1ce91ff7275b61e7382946c9d37c505203e5d66527ca3cbd95ce4665",
+      "compressed": false
+    }
+  }
+}

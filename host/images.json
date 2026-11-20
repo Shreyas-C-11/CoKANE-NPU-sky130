@@ -1,0 +1,10 @@
+{
+  "frozen_release": "cokane-20mhz-5x4-v0.2",
+  "sha256": {
+    "smoke.hex": "890b1df28eadefd74ea07cfc83d4e55832b1130177ef42b9ea7bba4350a0ae31",
+    "inference.hex": "05f89efa37cacfea317fb34db4b4d498066069f300efab1a3ecf6490bea0251d",
+    "expected.json": "9f2833c9a20b10fabf41c5ec3085de90bbf41bfb05d75300d66b9fece830e770"
+  },
+  "smoke_source": "test/test.py:firmware",
+  "inference_source": "qualified release firmware-evidence/original/firmware.hex"
+}

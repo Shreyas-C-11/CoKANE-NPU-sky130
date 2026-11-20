@@ -1,0 +1,25 @@
+name: external-memory-host
+on: [push, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  host:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: sudo apt-get update && sudo apt-get install -y iverilog
+      - run: pip install -r test/requirements.txt
+      - name: Host memory boundaries and failure handling
+        run: python -m unittest host.test_memory -v
+      - name: Board host sequencer against actual CPU MAC CoKANE RTL
+        run: |
+          make -C test_host
+          python -m cocotb_tools.check_results test_host/results.xml
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: host-cosimulation-results
+          path: test_host/results.xml

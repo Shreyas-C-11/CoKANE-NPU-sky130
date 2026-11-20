@@ -42,3 +42,9 @@ test_inference/results.xml
 
 test_signoff/sim_build/
 test_signoff/results.xml
+
+.submission-build/
+test_host/sim_build/
+test_host/results.xml
+!host/*.hex
+!layout/*.gds.gz

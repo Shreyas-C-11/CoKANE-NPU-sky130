@@ -1,47 +1,71 @@
 name: gds
-
 on:
   push:
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
   gds:
     runs-on: ubuntu-24.04
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
-          submodules: recursive
-
-      - name: Build GDS
-        uses: TinyTapeout/tt-gds-action@ttsky26d
+          python-version: '3.11'
+      - name: Verify and materialize the qualified layout
+        run: python scripts/verify-submission.py --materialize-dir .submission-build
+      - name: Import exact qualified GDS, LEF and powered netlist
+        uses: TinyTapeout/tt-gds-action/custom_gds@ttsky26d
         with:
           pdk: sky130A
-
+          top_module: tt_um_cokane_soc
+          gds_path: .submission-build/tt_um_cokane_soc.gds
+          lef_path: .submission-build/tt_um_cokane_soc.lef
+          verilog_path: .submission-build/tt_um_cokane_soc.pnl.v
+      - name: Bind PDK revision for the gate simulation action
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m = json.loads(Path('layout/manifest.json').read_text())
+          Path('tt_submission/pdk.json').write_text(json.dumps({
+              'PDK': m['pdk'], 'PDK_SOURCE': 'open_pdks',
+              'PDK_VERSION': m['pdk_revision']}, indent=2) + '\n')
+          PY
+      - name: Verify uploaded layout inputs
+        run: |
+          python scripts/verify-submission.py
+          cmp .submission-build/tt_um_cokane_soc.gds tt_submission/tt_um_cokane_soc.gds
+          cmp .submission-build/tt_um_cokane_soc.lef tt_submission/tt_um_cokane_soc.lef
+          cmp .submission-build/tt_um_cokane_soc.pnl.v tt_submission/tt_um_cokane_soc.v
+          cp layout/manifest.json tt_submission/qualified-layout.json
+          cp evidence/qualification-ck-signoff-r4.json tt_submission/qualification.json
+      - name: Publish metadata and the qualified submission
+        uses: actions/upload-artifact@v7
+        with:
+          name: tt_submission
+          overwrite: true
+          path: |
+            info.yaml
+            LICENSE
+            docs/*
+            tt_submission/*
   precheck:
     needs: gds
     runs-on: ubuntu-24.04
     steps:
-      - name: Run Tiny Tapeout Precheck
-        uses: TinyTapeout/tt-gds-action/precheck@ttsky26d
-
+      - uses: TinyTapeout/tt-gds-action/precheck@ttsky26d
   gl_test:
     needs: gds
     runs-on: ubuntu-24.04
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - name: GL test
-        uses: TinyTapeout/tt-gds-action/gl_test@ttsky26d
-
+      - uses: actions/checkout@v6
+      - uses: TinyTapeout/tt-gds-action/gl_test@ttsky26d
   viewer:
     needs: gds
     runs-on: ubuntu-24.04
     permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+      pages: write
+      id-token: write
     steps:
       - uses: TinyTapeout/tt-gds-action/viewer@ttsky26d
