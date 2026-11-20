@@ -8,12 +8,19 @@ enum { CK_ID=0, CK_STATUS=4, CK_COMMAND=8, CK_BATCH=12, CK_TERMS=16,
        CK_POOL_COUNT=48, CK_INPUT=64, CK_PSUM=128, CK_RESULT=192, CK_POOL_RESULT=224 };
 enum { CK_BEGIN=1, CK_ADD=2, CK_FINALIZE=3, CK_ABORT=4,
        CK_CLEAR_ERROR=5, CK_POOL=6, CK_LUT_CLEAR=7 };
+#ifdef COKANE_HOST_TEST
+uint32_t ck_test_read(unsigned off);
+void ck_test_write(unsigned off, uint32_t value);
+static inline void ck_write(unsigned off, uint32_t value) { ck_test_write(off,value); }
+static inline uint32_t ck_read(unsigned off) { return ck_test_read(off); }
+#else
 static inline void ck_write(unsigned off, uint32_t value) {
     *(volatile uint32_t *)(uintptr_t)(COKANE_BASE+off)=value;
 }
 static inline uint32_t ck_read(unsigned off) {
     return *(volatile uint32_t *)(uintptr_t)(COKANE_BASE+off);
 }
+#endif
 /* Bounded polling: returns 0 on idle/no error, -1 on sticky error, -2 timeout. */
 static inline int ck_wait(unsigned budget) {
     while (budget--) {

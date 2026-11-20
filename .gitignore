@@ -36,3 +36,6 @@ releases/
 
 test_cokane/sim_build/
 test_cokane/results.xml
+
+test_inference/sim_build/
+test_inference/results.xml
