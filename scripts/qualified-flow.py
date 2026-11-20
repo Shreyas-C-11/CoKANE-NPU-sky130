@@ -4,7 +4,7 @@ import json,os,pathlib,subprocess,sys
 from librelane.state import State
 from librelane.flows.classic import Classic
 from librelane.steps import Step
-from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT
+from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT,DetailedRouting
 root=pathlib.Path(__file__).resolve().parents[1]
 subprocess.run([sys.executable,str(root/'scripts/check-frozen-prototype.py')],check=True)
 @Step.factory.register()
@@ -24,8 +24,21 @@ class FinalElectricalRepair(SlowCornerRepair):
     id='OpenROAD.FinalElectricalRepair'
     name='Final slow-corner electrical repair'
     def get_script_path(self):return str(root/'scripts/final-electrical.tcl')
+@Step.factory.register()
+class ExtractedClosure(SlowCornerRepair):
+    id='OpenROAD.ExtractedClosure'
+    name='Extracted cell sizing closure'
+    def get_script_path(self):return str(root/'scripts/signoff-postroute.tcl')
+@Step.factory.register()
+class ClosureRouting(DetailedRouting):
+    id='OpenROAD.ClosureRouting'
+    name='Route extracted closure changes'
+    def run(self,state_in,**kwargs):
+        if not state_in.metrics.get('design__signoff_postroute_repairs',0):return {},{}
+        return super().run(state_in,**kwargs)
 class CoKANESignoffFlow(Classic):
     Steps=Classic.Steps.copy()
+    Steps[Steps.index(DetailedRouting)+1:Steps.index(DetailedRouting)+1]=[ExtractedClosure,ClosureRouting]
     Steps.insert(Steps.index(CTS)+1,ClockFanoutRepair)
     Steps[Steps.index(RepairDesignPostGRT)]=SlowCornerRepair
     Steps.insert(Steps.index(ResizerTimingPostGRT)+1,FinalElectricalRepair)
