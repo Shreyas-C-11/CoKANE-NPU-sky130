@@ -12,4 +12,7 @@ VERILOG_SOURCES += $(CURDIR)/../test/tb.v
 COMPILE_ARGS += -I$(SRC_DIR)
 TOPLEVEL = tb
 COCOTB_TEST_MODULES = test_host
+ifeq ($(SIM),icarus)
+PLUSARGS += -none
+endif
 include $(shell cocotb-config --makefiles)/Makefile.sim
