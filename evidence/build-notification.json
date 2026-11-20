@@ -1,10 +1,11 @@
 {
-  "status": "prototype_checks_passed",
+  "status": "cpu_inference_checks_passed",
   "fully_verified": false,
   "qualified_for_declared_scope": false,
   "scope": "CPU + MAC + programmable CoKANE RTL prototype",
   "pending_verification": [
-    "Complete layer-descriptor firmware and trained-model exporter/accuracy validation",
+    "Data movement/performance improvements: measured scheduler remains slower than CPU-only reference",
+    "Trained-model exporter and accuracy validation",
     "Fresh 5x4 physical implementation",
     "Integrated post-route functional gate simulation",
     "Nine-corner STA and electrical limits at 50 ns",

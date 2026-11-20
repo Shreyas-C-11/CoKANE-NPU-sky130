@@ -130,7 +130,7 @@ Error codes: 1 BUSY, 2 STATE, 3 CONFIG, 4 MISSING_DATA (input or referenced LUT 
 
 First validation profile: 28x28x1, 3x3 conv 1->2, pool to 13x13x2, 3x3 conv 2->2, pool to 5x5x2, flatten to 50 values, dense KAN 50->10, CPU argmax. Pooled feature storage is 338 bytes and 50 bytes using one byte per value. No full unpooled map is necessary when batches group pooling windows.
 
-The target software profile will validate input images up to 32x32, convolution Cin up to 4 and Cout up to 32. Hardware does not parse those shapes; it enforces the 8-lane / 64-term / 4-or-6-bit micro-job limits. The layer count is limited by available external storage and firmware, not instantiated layers. Larger networks must obey the total-term bound; splitting into multiple ADD calls does not permit exceeding 64 contributions. No DMA, on-chip full-model memory, autonomous window generator, hardware line buffer, interrupt, softmax, on-chip training or FPGA streaming adapter is claimed.
+The firmware profile validates input images up to 32x32, convolution Cin up to 4 and Cout up to 32. Hardware does not parse those shapes; it enforces the 8-lane / 64-term / 4-or-6-bit micro-job limits. The layer count is limited by available external storage and firmware, not instantiated layers. Larger networks must obey the total-term bound; splitting into multiple ADD calls does not permit exceeding 64 contributions. No DMA, on-chip full-model memory, autonomous window generator, hardware line buffer, interrupt, softmax, on-chip training or FPGA streaming adapter is claimed.
 
 ## 7. Verification and implementation gates
 
@@ -147,7 +147,7 @@ Performance reports must distinguish compute cycles, context elapsed cycles, tab
 
 Active implementation: `CoKANE/`, branch `feature/cokane-programmable`, derived from frozen CPU+MAC tag. `CKAN/` remains the supplied reference. The copy of this document at `CoKANE/NPU_Specs.md` is committed with the implementation; keep the root copy synchronized.
 
-Milestone 1: the lookup/reduction/pooling RTL, CPU integration, firmware register helpers and synthetic tensor reference schedule are implemented. Complete layer-descriptor firmware and trained-model export remain future work. A source build or passing RTL regression is not physical qualification.
+Milestone 1: the lookup/reduction/pooling RTL, CPU integration, firmware register helpers and synthetic tensor reference schedule are implemented. The C layer scheduler is implemented and verified in milestone 2; trained-model export remains future work. A source build or passing RTL regression is not physical qualification.
 
 ## 9. First build milestone (20 November 2026)
 
@@ -176,3 +176,43 @@ python3 scripts/check-cokane-milestone.py
 ```
 
 The server reuses the baseline Python environment through an ignored `.venv` symlink. CAD/PDK installations remain outside Git. Synthesis reproduces from the pinned library; mapped artifacts are in ignored `verification/cokane-synth/`. Baseline instance-specific physical ECO execution is deliberately blocked in this branch. The next physical implementation needs a new generic 5x4 flow and new qualification evidence.
+
+## 10. Compiled CPU firmware milestone (20 November 2026)
+
+`firmware/cokane_scheduler.c` implements checked convolution+pool and dense descriptors. Firmware gathers windows, batches two pooling windows (eight convolution positions), handles final four-lane batches, preserves wide sums across function reloads, finalizes once, and stores channel-major signed-byte feature maps externally. Dense jobs use one class output per context; argmax selects the first maximum on ties.
+
+Descriptors contain dimensions, pointers and buffer lengths. Unsupported shapes/precision, undersized buffers, input/output or table/output aliases, and out-of-range quantized values are rejected before device writes. A busy/active device belongs to its caller and is not aborted by another layer call. Polling has a bounded number of status reads. An error/timeout during owned work issues ABORT; discard the entire layer's possibly partial output. No concurrent access lock or hardware bus-acknowledgment timeout is supplied. `ck_scheduler_init` requires a valid context pointer.
+
+### Selective LUT loading
+
+The bank need not contain all 64 entries if a job references fewer codes. Revision 0.2 firmware streams all 16 entries for a four-bit function, but for six-bit functions loads only the distinct codes needed by the current batch. It clears entry-valid flags before each function and writes each selected address/value pair once. All active input references must still pass hardware validity checks before ADD. The fixed 64x6 physical bank and RTL are unchanged; partial sums still retain full precision.
+
+This reduces traffic, not the size of the externally stored model. The CPU-only baseline can look up entries directly in external memory and performs no CoKANE transfers.
+
+### Verification and performance
+
+Thirty native compiled-C cases cover shapes, signed data, odd dimensions, partial batches, buffer aliases, invalid descriptors/quantization, ownership, error/timeout cleanup, and a complete synthetic network. A freestanding RV32E/ILP32E binary then executes both the scheduler and a straightforward CPU-only reference on the unchanged CPU+MAC+CoKANE RTL. Both paths match the independent Python oracle for all 338 first-layer features, 50 second-layer features, ten scores and argmax. Actual NPU MMIO transaction counters match firmware instrumentation.
+
+The example is 28x28, two 3x3/stride-1 convolution + 2x2/stride-2 pooling layers, then a 50->10 KAN head. Tables and already-quantized signed input pixels are synthetic. This is not MNIST accuracy validation and excludes raw-image preprocessing.
+
+Verilator runs a simulation-only 256 KiB RAM on the existing external-memory bus with reproducible 0..3-cycle added waits. This RAM is outside the chip and adds no ASIC memory. It does not model the pin-level host's complete serialization and response delay. Separate pin-interface regressions remain valid.
+
+| Same synthetic workload at nominal 20 MHz | Measurement |
+|---|---:|
+| Accelerator scheduler, initial full-table loading | 751.05525 ms |
+| Accelerator scheduler, selective six-bit loading | 700.47725 ms |
+| Straightforward CPU-only reference, latest run | 462.8764 ms |
+| Accelerator busy clocks / nominal busy time | 34,486 / 1.7243 ms |
+| Hardware micro-jobs | 206 |
+| LUT entry writes, full / selective | 86,432 / 27,976 |
+| NPU MMIO writes, full / selective | 111,420 / 55,492 |
+| Scheduler NPU reads, selective | 3,713 |
+| Input-code writes / output values read | 16,268 / 398 |
+
+Despite 67.6% fewer LUT entry writes, selective loading improves this instrumented scheduler's elapsed time by only about 6.7%. It remains about 1.51 times slower than the straightforward CPU-only reference for this fixture and RAM model. No acceleration benefit has been established. Firmware instruction/data traffic, gathering, validation, instrumentation and device transfers dominate; the core adder's busy time is not end-to-end inference latency. The hardware phase includes boot/setup and report preparation; the CPU-only phase runs afterward with its own range scans. Neither is a tuned production implementation. No silicon frequency/timing claim follows from these nominal-clock conversions.
+
+`evidence/cokane/inference-validation.json` records both phase cycle counts, combined program external-memory counters, scores and source hashes. `inference-full-table-validation.json` and `inference-full-table-build.json` retain the original full-table comparison; source commit `b542947` reproduces that policy. The current build record identifies the exact selective-loading source and firmware.
+
+Reproduce on the server with `bash scripts/test-inference.sh`. It builds RV32E C (no M/C extensions), generates deterministic data, checks native C against an independent oracle, executes the binary on the real SoC RTL, and compares all intermediate tensors. Verilator is the default; `SIM=icarus` is a slower alternative. See `firmware/cokane_scheduler.h`, `firmware/inference_main.c`, and `firmware/inference_reference.c`.
+
+Next: improve or reconsider data movement before physical implementation, validate the trained six-bit exporter/accuracy, then undertake a fresh 5x4 physical flow. Hardware RTL has not changed in this firmware milestone.

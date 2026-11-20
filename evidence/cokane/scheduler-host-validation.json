@@ -1,0 +1,8 @@
+{
+  "result": "PASS",
+  "cases": 30,
+  "scope": "Compiled C scheduler against a behavioral protocol model and independent tensor oracle; separate CPU RTL execution required",
+  "full_synthetic_profile": true,
+  "invalid_descriptor_zero_device_writes": true,
+  "timeout_and_hardware_error_abort": true
+}

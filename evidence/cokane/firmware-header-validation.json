@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "scope": "C11 header syntax only, gcc -Wall -Wextra -Werror",
-  "sha256": "8559f12391a07eaf37110c31ea732bef4dbefbc7d4e01d937384de49933f6ca6",
+  "scope": "C11 header syntax and inclusion in strict-warning host C and compiled RV32E firmware",
+  "sha256": "ad34d942bb3e98a0fc4b4929d3ec7ea794c702d05469244efff8542b134c1da0",
   "compiler": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
 }

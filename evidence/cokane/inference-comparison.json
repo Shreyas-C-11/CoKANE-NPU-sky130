@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "scope": "Functional equivalence and simulated performance for one synthetic profile; not a silicon speedup claim",
+  "full_table_ms": 751.05525,
+  "selective_table_ms": 700.47725,
+  "cpu_reference_ms": 462.8764,
+  "lut_entry_write_reduction_percent": 67.63235838578304,
+  "mmio_write_reduction_percent": 50.19565607610842,
+  "scheduler_elapsed_improvement_percent": 6.734258232000901,
+  "scheduler_over_cpu_time_ratio": 1.5133138133635675,
+  "input_records_sha256": {
+    "inference-full-table-validation.json": "b8741a4335a19f91e0c9cdbeab0a63361bceb89a461a48eaa38fc497fea18414",
+    "inference-validation.json": "0404887bf638ebdd414b32f51aaf210a7042733e58e0931ed8d604b6e4d44994"
+  },
+  "recommendation": "Improve data movement before physical implementation; the measured instrumented scheduler is slower than the CPU-only reference."
+}

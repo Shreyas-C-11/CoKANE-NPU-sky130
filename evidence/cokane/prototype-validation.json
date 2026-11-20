@@ -1,7 +1,7 @@
 {
   "result": "PASS",
   "milestone": "RTL prototype and synthesis feasibility",
-  "created_at_utc": "2026-11-20T05:46:22.091559+00:00",
+  "created_at_utc": "2026-11-20T06:25:00.637043+00:00",
   "rtl_source_commit": "cde42274883285c2421867c6aa8c05dce834fa57",
   "physically_qualified": false,
   "trained_model_accuracy_verified": false,
@@ -29,13 +29,15 @@
     "synthesis-validation.json": "fe57916157bb786dd038dd34a0118d2adcd8d6547e1f79f1dfe2aa34899f5b93",
     "engine-stat.json": "43cc6c2dbb6b0ce2ae903113ec7f7221c5c3502fbbdcf7de2dc6cd4466a8884c",
     "integrated-stat.json": "d64ea845345bb842d43e507aacc81f2ca3906e72fe707e22cc7fecb3599eddee",
-    "firmware-header-validation.json": "bd17ae51a457bdb7799afca725ecb5ecaf1f517056421b990f6e45e4031a13ac"
+    "firmware-header-validation.json": "33ab3aca85eb5a1052627f4d2f414179b195d9727a11ded0394a03036ef1e1d0"
   },
   "pending": [
-    "Complete layer-descriptor firmware and trained-model exporter/accuracy validation",
+    "Data movement/performance improvements: measured scheduler remains slower than CPU-only reference",
+    "Trained-model exporter and accuracy validation",
     "Fresh 5x4 physical implementation",
     "Integrated post-route functional gate simulation",
     "Nine-corner STA and electrical limits at 50 ns",
     "DRC/LVS/antenna and Tiny Tapeout prechecks"
-  ]
+  ],
+  "compiled_cpu_inference_record_sha256": "0404887bf638ebdd414b32f51aaf210a7042733e58e0931ed8d604b6e4d44994"
 }
