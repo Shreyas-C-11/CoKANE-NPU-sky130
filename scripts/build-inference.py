@@ -6,7 +6,7 @@ out=root/'verification/inference';out.mkdir(parents=True,exist_ok=True)
 write(out)
 prefix=pathlib.Path(os.environ.get('RISCV_TOOLCHAIN',str(root.parent/'tools/xpack-riscv-none-elf-gcc-15.2.0-1')))/'bin/riscv-none-elf-'
 tool=lambda name:str(prefix)+name
-sources=['firmware/inference_start.S','firmware/inference_main.c','firmware/cokane_scheduler.c','firmware/inference_runtime.c']
+sources=['firmware/inference_start.S','firmware/inference_main.c','firmware/cokane_scheduler.c','firmware/inference_runtime.c','firmware/inference_reference.c']
 cmd=[tool('gcc'),'-march=rv32e','-mabi=ilp32e','-mno-relax','-msmall-data-limit=0','-Os','-g',
      '-std=c11','-Wall','-Wextra','-Werror','-ffreestanding','-fno-builtin','-fno-pic','-fno-pie',
      '-fno-unwind-tables','-fno-asynchronous-unwind-tables','-ffunction-sections','-fdata-sections',

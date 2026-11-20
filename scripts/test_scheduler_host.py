@@ -73,6 +73,8 @@ def main():
     lib.ck_convolution_pool.argtypes=[C.POINTER(Scheduler),C.POINTER(Conv)]
     lib.ck_dense.argtypes=[C.POINTER(Scheduler),C.POINTER(Dense)]
     lib.ck_argmax.argtypes=[Ptr,C.c_uint];lib.ck_argmax.restype=C.c_uint
+    lib.ck_reference_conv_pool.argtypes=[C.POINTER(Conv)]
+    lib.ck_reference_dense.argtypes=[C.POINTER(Dense)]
     assert lib.ck_conv_size()==C.sizeof(Conv) and lib.ck_dense_size()==C.sizeof(Dense)
     callbacks=[]
     def bind(device):
@@ -113,6 +115,16 @@ def main():
     assert lib.ck_dense(C.byref(s),C.byref(dh))==0 and list(score)==f['expected_scores']
     assert lib.ck_argmax(score,10)==f['prediction'] and not errors
     assert (s.stats.jobs,s.stats.lut_entries,s.stats.compute_cycles)==(206,86432,34486)
+    cases+=1
+    # Straightforward CPU-only arithmetic is checked against the same oracle.
+    ca,cb,cs=array([0]*338),array([0]*50),array([0]*10)
+    c1=Conv.from_buffer_copy(d1);c2=Conv.from_buffer_copy(d2);ch=Dense.from_buffer_copy(dh)
+    c1.output=ca;c2.input=ca;c2.output=cb;ch.input=cb;ch.output=cs
+    before=(model.reads,model.writes)
+    assert lib.ck_reference_conv_pool(C.byref(c1))==0 and list(ca)==f['expected_a']
+    assert lib.ck_reference_conv_pool(C.byref(c2))==0 and list(cb)==f['expected_b']
+    assert lib.ck_reference_dense(C.byref(ch))==0 and list(cs)==f['expected_scores']
+    assert (model.reads,model.writes)==before
     cases+=1
     # Invalid descriptors/quantization/aliases cause zero device traffic.
     model=Device();errors=bind(model);s=Scheduler();lib.ck_scheduler_init(C.byref(s),3)

@@ -19,4 +19,4 @@ result['host_scheduler_record_sha256']=sha(p/'scheduler-host-validation.json')
 result['physical_qualification']=False
 (p/'inference-validation.json').write_text(json.dumps(result,indent=2)+'\n')
 print('INFERENCE_MILESTONE_PASS')
-print(json.dumps({k:result[k] for k in ['scores','prediction','cpu_cycles','simulation_inference_ms','accelerator_busy_ms','statistics']},indent=2))
+print(json.dumps({k:result[k] for k in ['scores','prediction','cpu_cycles','hardware_phase_ms','cpu_only_reference_ms','accelerator_busy_ms','statistics']},indent=2))

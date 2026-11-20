@@ -16,6 +16,7 @@ module tb;
  reg [2:0] delay_count=0;
  reg [63:0] cycles=0, external_reads=0, external_writes=0, wait_cycles=0;
  reg [63:0] npu_reads=0,npu_writes=0;
+ reg [63:0] hardware_phase_cycles=0, cpu_reference_cycles=0;
  reg finished=0, fault=0;
  reg [31:0] completion=0;
  reg [1023:0] image_file;
@@ -53,6 +54,8 @@ module tb;
      if (mem_we) begin
       external_writes<=external_writes+1;
       for (i=0;i<4;i=i+1) if(mem_sel[i]) mem[mem_addr[17:2]][8*i+:8]<=mem_data[8*i+:8];
+      if (mem_addr==32'h30004 && mem_sel==15 && mem_data==4) hardware_phase_cycles<=cycles+1;
+      if (mem_addr==32'h30004 && mem_sel==15 && mem_data==5) cpu_reference_cycles<=cycles+1-hardware_phase_cycles;
       if (mem_addr==32'h30000 && mem_sel==15 && mem_data!=0) begin
        completion<=mem_data;finished<=1;
       end

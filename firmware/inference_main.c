@@ -4,11 +4,15 @@
 
 static int8_t feature_a[338], feature_b[50], scores[10];
 static ck_scheduler scheduler;
+static int8_t cpu_a[338], cpu_b[50], cpu_scores[10];
+int ck_reference_conv_pool(const ck_conv_pool_descriptor *d);
+int ck_reference_dense(const ck_dense_descriptor *d);
 typedef struct {
     uint32_t magic, stage;
     int32_t error;
     uint32_t prediction, feature_a, count_a, feature_b, count_b, scores, count_scores;
     ck_statistics stats;
+    uint32_t cpu_a, cpu_b, cpu_scores, cpu_prediction;
 } inference_report;
 static volatile inference_report *const report=(volatile inference_report *)0x30000;
 
@@ -30,11 +34,20 @@ int main(void) {
     report->stage=3;
     rc=ck_dense(&scheduler,&head);
     if (rc) { report->error=rc; goto fail; }
-    report->stage=4; report->prediction=ck_argmax(scores,10);
+    report->prediction=ck_argmax(scores,10);
     report->feature_a=(uintptr_t)feature_a; report->count_a=sizeof(feature_a);
     report->feature_b=(uintptr_t)feature_b; report->count_b=sizeof(feature_b);
     report->scores=(uintptr_t)scores; report->count_scores=sizeof(scores);
     report->stats=scheduler.stats;
+    report->stage=4;
+    first.output=cpu_a; second.input=cpu_a; second.output=cpu_b;
+    head.input=cpu_b; head.output=cpu_scores;
+    if (ck_reference_conv_pool(&first) || ck_reference_conv_pool(&second) || ck_reference_dense(&head)) {
+        report->error=-100; goto fail;
+    }
+    report->stage=5;
+    report->cpu_a=(uintptr_t)cpu_a; report->cpu_b=(uintptr_t)cpu_b;
+    report->cpu_scores=(uintptr_t)cpu_scores; report->cpu_prediction=ck_argmax(cpu_scores,10);
     __asm__ volatile ("" ::: "memory");
     report->magic=0x600d600d;
     for (;;) { }
