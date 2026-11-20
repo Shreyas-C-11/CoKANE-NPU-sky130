@@ -25,17 +25,17 @@ state=portable(state)
 if metrics is not None:state['metrics']=metrics
 (checkpoint/'state-portable.json').write_text(json.dumps(state,indent=2)+'\n')
 (checkpoint/'manifest.json').write_text(json.dumps({'original_checkpoint':str(parent),'original_checkpoint_sha256':sha(parent),'resume_step':resume_step,'files':files},indent=2)+'\n')
-(stage/'README.txt').write_text(f'''CPU + hybrid MAC baseline: {release}
+(stage/'README.txt').write_text(f'''Frozen CPU + MAC + CoKANE: {release}
 Qualified run: {run_name}
-Scope: 20 MHz, 3x4 tiles; RTL, functional gate tests, nine-corner STA, electrical checks, physical checks and Tiny Tapeout prechecks.
+Scope: 20 MHz, 5x4 tiles; RTL, functional gate tests, nine-corner STA, electrical checks, physical checks and Tiny Tapeout prechecks.
 SDF timing simulation, silicon/radiation qualification and full-chip power/IR signoff are excluded.
 
-Clone the included history with: git clone source.bundle cpu-mac-baseline
+Clone the included history with: git clone source.bundle cokane-signoff
 The local release tag is included. See the source README and evidence/qualification-{run_name}.json.
 
 The portable checkpoint reproduces the incremental closure entry point. After installing the pinned tool/PDK environment, create a fresh materialized state with:
-python3 cpu-mac-baseline/scripts/restore-checkpoint.py checkpoint state-local.json
-Then, from the cloned source directory, set QUALIFY_FROM_STATE to that absolute state-local.json path and QUALIFY_FROM_STEP={resume_step} before running scripts/harden-local.sh with a fresh run name. Re-run qualification for any rebuilt result.
+python3 cokane-signoff/scripts/restore-checkpoint.py checkpoint state-local.json
+Then, from the cloned source directory, set QUALIFY_FROM_STATE to that absolute state-local.json path and QUALIFY_FROM_STEP={resume_step} before running scripts/harden-named.sh with a fresh run name. Re-run qualification for any rebuilt result.
 
 SHA256SUMS covers the archive members. Tool binaries and PDK installations are not included.
 ''')
@@ -45,8 +45,12 @@ for p in final.rglob('*'):
  if p.is_file():entries['final/'+str(p.relative_to(final))]=p
 entries['resolved.json']=root/'runs'/run_name/'resolved.json'
 entries['source-README.md']=root/'README.md'
+entries['NPU_Specs.md']=root/'NPU_Specs.md'
+entries['SIGNOFF.md']=root/'SIGNOFF.md'
+for p in (root/'evidence/cokane').rglob('*'):
+ if p.is_file():entries['evidence/cokane/'+str(p.relative_to(root/'evidence/cokane'))]=p
 for p in (root/'evidence').glob('*'):
- if p.is_file() and (run_name in p.name or p.name in ['validation-policy.json','rtl-current-validation.json','rtl-current-results.xml','rtl-current-input-sha256.json','source-provenance.json','pdk-version.json','tool-versions.txt','build-notification.json','rtl-current.log','rtl-current-exit-code.txt']):entries['evidence/'+p.name]=p
+ if p.is_file() and (run_name in p.name or p.name in ['validation-policy.json','rtl-current-validation.json','rtl-current-results.xml','rtl-current-input-sha256.json','source-provenance.json','pdk-version.json','tool-versions.txt','frozen-prototype.json','build-notification.json','rtl-current.log','rtl-current-exit-code.txt']):entries['evidence/'+p.name]=p
 sta_dirs=list((root/'runs'/run_name).glob('*-openroad-stapostpnr'))
 for directory in sta_dirs:
  for p in directory.rglob('*.rpt'):entries['timing/'+str(p.relative_to(directory))]=p

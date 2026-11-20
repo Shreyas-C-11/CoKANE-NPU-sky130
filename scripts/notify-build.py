@@ -21,7 +21,7 @@ def snapshot(running=False, exit_code=None, run_directory=None):
               'fully_verified': False, 'exit_code': exit_code}
     if running:
         result['source_commit'] = None
-        result['message'] = 'CPU+MAC hardening started.'
+        result['message'] = 'CPU+MAC+CoKANE hardening started.'
         return result
     log = run / 'flow.log'
     complete = log.is_file() and 'Flow complete.' in log.read_text(errors='replace')
@@ -68,10 +68,10 @@ def snapshot(running=False, exit_code=None, run_directory=None):
             if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=digest:
                 matches=False
         if matches and qualification.get('artifacts_sha256'):
-            result['status']='baseline_checks_passed'
+            result['status']='declared_scope_checks_passed'
             result['qualified_for_declared_scope']=True
             result['pending_verification']=[]
-    result['message'] = ('CPU+MAC baseline checks passed for the declared scope.' if result['status']=='baseline_checks_passed' else 'CPU+MAC build: '+result['status']+'. Completion is not full design sign-off.')
+    result['message'] = ('CPU+MAC+CoKANE block checks passed for the declared scope.' if result['status']=='declared_scope_checks_passed' else 'CPU+MAC+CoKANE build: '+result['status']+'. Completion is not full design sign-off.')
     return result
 
 def main():
