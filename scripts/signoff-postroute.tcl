@@ -17,12 +17,12 @@ proc mark_inst_nets {inst} {
 set modified 0
 foreach {name old new} {
  clkbuf_0_clk sky130_fd_sc_hd__clkbuf_16 sky130_fd_sc_hd__clkbuf_8
- hold5664 sky130_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__clkdlybuf4s50_2
+ hold5664 sky130_fd_sc_hd__dlygate4sd3_1 sky130_fd_sc_hd__clkdlybuf4s25_2
 } {
  set inst [$::block findInst $name]
  if {$inst=="NULL"} {error "Missing ECO instance $name"}
  set master [[$inst getMaster] getName]
- if {$master==$old} {
+ if {$master==$old || ($name=="hold5664" && $master=="sky130_fd_sc_hd__clkdlybuf4s50_2")} {
   mark_inst_nets $inst
   replace_cell $name $new
   mark_inst_nets $inst
