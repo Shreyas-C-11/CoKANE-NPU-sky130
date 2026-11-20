@@ -175,7 +175,7 @@ bash scripts/test-cokane-synth-gl.sh
 python3 scripts/check-cokane-milestone.py
 ```
 
-The server reuses the baseline Python environment through an ignored `.venv` symlink. CAD/PDK installations remain outside Git. Synthesis reproduces from the pinned library; mapped artifacts are in ignored `verification/cokane-synth/`. Baseline instance-specific physical ECO execution is deliberately blocked in this branch. The next physical implementation needs a new generic 5x4 flow and new qualification evidence.
+The server reuses the baseline Python environment through an ignored `.venv` symlink. CAD/PDK installations remain outside Git. Synthesis reproduces from the pinned library; mapped artifacts are in ignored `verification/cokane-synth/`. Historical baseline ECO scripts are unused. The frozen qualification branch uses a fresh 5x4 implementation and new qualification evidence.
 
 ## 10. Compiled CPU firmware milestone (20 November 2026)
 
@@ -215,4 +215,10 @@ Despite 67.6% fewer LUT entry writes, selective loading improves this instrument
 
 Reproduce on the server with `bash scripts/test-inference.sh`. It builds RV32E C (no M/C extensions), generates deterministic data, checks native C against an independent oracle, executes the binary on the real SoC RTL, and compares all intermediate tensors. Verilator is the default; `SIM=icarus` is a slower alternative. See `firmware/cokane_scheduler.h`, `firmware/inference_main.c`, and `firmware/inference_reference.c`.
 
-Next: improve or reconsider data movement before physical implementation, validate the trained six-bit exporter/accuracy, then undertake a fresh 5x4 physical flow. Hardware RTL has not changed in this firmware milestone.
+The user has deferred performance improvement and trained-model accuracy. The exact working prototype is now frozen for digital block qualification in 5x4 tiles at 20 MHz; see SIGNOFF.md. Hardware RTL and firmware remain unchanged throughout this qualification.
+
+## 11. Preserved prototype and final qualification
+
+Tag `cokane-working-prototype-v0.2` identifies commit `db530b7fe46207c3720513d0c4b0d0d69ce45dee`. A separate performance worktree, Git bundle, full prototype archive and SHA-256 manifest preserve this starting point. `scripts/check-frozen-prototype.py` rejects changes to the frozen RTL, firmware and fixture generator.
+
+The qualification branch closes physical implementation at the existing electrical limits, verifies all nine RC/PVT corners, and runs the exact final gate netlist through both basic firmware and full compiled pin-host inference. The additional all-zero LUT model checks that a valid but uninformative classifier still completes. Model usefulness and integer execution correctness are separate validation targets. All 15 Tiny Tapeout prechecks and artifact-bound reports are required; the detailed sequence and exclusions are in SIGNOFF.md.

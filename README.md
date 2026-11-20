@@ -4,7 +4,7 @@ Development branch for a SKY130 5x4-tile integration at a 20 MHz target. See [NP
 
 The implementation adds one 64x6-bit writable LUT bank, eight signed 12-bit partial sums, a shared lookup/adder datapath, final six-bit saturation and signed pooling. The CPU gathers windows and moves tables/feature maps through the existing host-backed memory service. There is no DMA or full-model on-chip memory.
 
-This integrated design is **not physically qualified**. The inherited `cpu-mac-20mhz-3x4-v1` tag and historical evidence describe the CPU+MAC baseline only. Instance-specific baseline post-route ECO scripts must not be used to qualify the changed netlist.
+This integrated design is **not physically qualified**. The inherited `cpu-mac-20mhz-3x4-v1` tag and historical evidence describe the CPU+MAC baseline only. The new qualification flow uses independent placement/routing and artifact-bound verification; historical baseline ECO scripts are unused.
 
 Current implementation and test results are recorded under `evidence/cokane/`. The original supplied FPGA sources remain in the sibling `CKAN/` folder.
 
@@ -18,4 +18,8 @@ Preliminary filtered SKY130 cell areas: CoKANE alone 0.047658 mm2; CPU+MAC+CoKAN
 
 `bash scripts/test-inference.sh` builds RV32E/ILP32E C and runs a synthetic 28x28, two-convolution/pooling, 50->10 KAN network on the actual CPU/NPU RTL, alongside a CPU-only reference. Both intermediate maps, all scores and argmax match an independent integer oracle. Thirty native C cases cover descriptors, numerical ranges, aliases and runtime failure handling.
 
-Selective six-bit LUT loading reduces entry writes from 86,432 to 27,976 without changing the hardware. The measured scheduler improves from 751.1 ms to 700.5 ms, but remains slower than the CPU-only reference at 462.9 ms (nominal 20 MHz, specified simulation RAM waits, instrumented firmware). This proves correctness, not acceleration, trained accuracy or physical timing closure. Address data movement before committing the design physically. Specification section 10 and `evidence/cokane/inference-validation.json` record the comparison and exact scope.
+Selective six-bit LUT loading reduces entry writes from 86,432 to 27,976 without changing the hardware. The measured scheduler improves from 751.1 ms to 700.5 ms, but remains slower than the CPU-only reference at 462.9 ms (nominal 20 MHz, specified simulation RAM waits, instrumented firmware). This proves correctness, not acceleration, trained accuracy or physical timing closure. Performance and trained accuracy are deferred while the frozen functional architecture undergoes physical qualification. Specification section 10 and `evidence/cokane/inference-validation.json` record the comparison and exact scope.
+
+## Preserved prototype and qualification
+
+The working prototype is preserved at `cokane-working-prototype-v0.2` (`db530b7`). The separate `feature/cokane-performance` worktree retains it for later performance and trained-model work. The `signoff/cokane-v0.2` branch qualifies the same RTL and firmware in 5x4 tiles at 20 MHz. Physical cell sizing and routing may change; the frozen functional sources may not. See [SIGNOFF.md](SIGNOFF.md) for the required gates and scope. Current qualification is in progress; a hash-bound `evidence/qualification-RUN_TAG.json` is required before declaring a pass.
