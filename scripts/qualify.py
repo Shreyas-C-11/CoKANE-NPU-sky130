@@ -50,6 +50,17 @@ for corner in sorted(expected):
     for kind in ['slew','fanout','cap']:
         k = f'design__max_{kind}_violation__count__corner:{corner}'; checks[k] = metrics.get(k)
         require(checks[k] == 0, f'{k}={checks[k]}')
+sta_dirs = list(run.glob('*-openroad-stapostpnr'))
+require(len(sta_dirs) == 1, 'Expected exactly one final extracted STA step')
+for corner in sorted(expected):
+    k = f'timing__unannotated_net_filtered__count__corner:{corner}'
+    checks[k] = metrics.get(k); require(checks[k] == 0, f'{k}={checks[k]}')
+    if len(sta_dirs) == 1:
+        p = sta_dirs[0]/corner/'checks.rpt'; bind(p)
+        report = p.read_text(); marker = 'check_setup -verbose'
+        require(marker in report and not report.split(marker)[-1].split('\n',1)[-1].strip('=\n\r '), 'STA setup/constraint warning: '+corner)
+        p = sta_dirs[0]/corner/'unpropagated.rpt'; bind(p)
+        require(not p.read_text().strip(), 'Unpropagated clock: '+corner)
 require(config['CLOCK_PERIOD'] == 50, 'Clock period must remain 50 ns')
 netlist = run/'final/pnl/tt_um_cokane_soc.pnl.v'
 gl = passing_json(root/f'evidence/gl-{tag}-validation.json')
