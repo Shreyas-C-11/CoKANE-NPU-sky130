@@ -1,18 +1,24 @@
 {
-  "scope": "CPU + MAC + programmable CoKANE development, 5x4 tiles, 20 MHz target",
-  "status": "NOT_QUALIFIED",
+  "scope": "Frozen CPU + MAC + CoKANE digital block qualification, SKY130A, 5x4 tiles, 20 MHz",
+  "status": "IN_PROGRESS",
+  "frozen_tag": "cokane-working-prototype-v0.2",
   "required": [
-    "standalone RTL",
-    "CPU firmware integration",
-    "independent tensor oracle",
-    "synthesis feasibility",
-    "new physical flow",
-    "functional gate simulation",
-    "nine-corner STA",
-    "DRC/LVS/antenna",
-    "Tiny Tapeout prechecks"
+    "frozen RTL/firmware identity",
+    "RTL integer and error-path regression",
+    "compiled CPU synthetic inference",
+    "final integrated functional gate simulation",
+    "nine-corner setup/hold STA and electrical checks",
+    "routing/Magic/KLayout DRC",
+    "LVS",
+    "antenna",
+    "15 Tiny Tapeout prechecks"
   ],
   "sdf_required": false,
-  "baseline_release": "cpu-mac-20mhz-3x4-v1",
-  "note": "Historical qualification records apply only to the frozen CPU+MAC release."
+  "excluded": [
+    "performance optimization",
+    "trained-model inference accuracy",
+    "silicon/radiation validation",
+    "full-chip power/IR/EM and foundry release signoff"
+  ],
+  "note": "Low predictive accuracy is separate from supported integer execution. Unsupported descriptors and malformed data must fail in a controlled way. Physical qualification does not certify every model or real hardware fault."
 }

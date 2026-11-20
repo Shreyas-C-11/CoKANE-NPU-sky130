@@ -1,0 +1,29 @@
+{
+  "frozen_commit": "db530b7fe46207c3720513d0c4b0d0d69ce45dee",
+  "tag": "cokane-working-prototype-v0.2",
+  "scope": "Freeze functional RTL, firmware, numerical contract and synthetic fixture; performance and trained-model accuracy deferred",
+  "immutable_files_sha256": {
+    "firmware/cokane.h": "ad34d942bb3e98a0fc4b4929d3ec7ea794c702d05469244efff8542b134c1da0",
+    "firmware/cokane_scheduler.c": "0b643fe0f63cebf44b85571c75378e26a72578ac64dbdfae46f803ed3522e3fe",
+    "firmware/cokane_scheduler.h": "d80c2bf8900b9f1e5cbf44cd81f9dbbb961140ba686e6ea95b1fabd8baea2113",
+    "firmware/inference.ld": "84452f22a393e3f3ed036f787a174bde8ddc005975828f48ef5165ee8b7e1082",
+    "firmware/inference_main.c": "efacd1acfa6e7ca7322556c77817d77cf55fed502d5236e61c36d5196382af37",
+    "firmware/inference_reference.c": "abcd86c2d2e6245a1b8c74461dd740238ff7290abd3db03937cd20e17e32b2c1",
+    "firmware/inference_runtime.c": "4e882b792f892d0d77b02a85e217e23166475c8a7605920f1984b767c38a8131",
+    "firmware/inference_start.S": "67d6a06084990d312d9c26db76b94d6d285b1ca73b1834ef6aa768216856deb1",
+    "scripts/inference_fixture.py": "ce960f124e27695dcb7a47eb7b86b04953506a76bd873485656ed91f47d98666",
+    "src/cokane_wb.v": "9558ff2ac9d58f9b36aa6e293b0baad776d003bb17e925007b803329f4b3d914",
+    "src/mac_hybrid.sv": "fefa976f24c40ff309dac77b116e151c00a0d09351ec237d14fed692d0731fc1",
+    "src/mac_hybrid_datapath.vh": "e1ce7234d1d8f91b278ae45e36d56928bff5c7ea3abff69f79dd993a831bbe77",
+    "src/mac_residue7_check.sv": "f9d701066fd1334b0acfabc20287f75fc08df3f6276ea5165e770945eba481b7",
+    "src/mac_wb.v": "b49d699771f60fd672247d1fb02054f686e60437d63dece53db2957d51e2deeb",
+    "src/picorv32.v": "0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622",
+    "src/secded_decoder.sv": "64d590d33b6a27c5b3f389877ca3cda7fba781f8b54c6b7a9d73d5773a26f63e",
+    "src/secded_encoder.sv": "4d14b3965504131ecfea1d854c5daea787d0dcb07de250c159408f7d3df88227",
+    "src/secded_functions.vh": "d3b8987bd5178992eb0dd24a3824058a19ecd5ac4c08b6c7bb143aec2def4508",
+    "src/signed_residue7.sv": "05845758feb41614a2ec2149ec52ade598f94cbe130bf43cd256965629bd7e0e",
+    "src/soc_core.v": "82a728cbf5ff7c5710956320806a44cfd80af129b05e679918db6e51ed2deee9",
+    "src/tt_um_cokane_soc.v": "6e974525166ee77ecbad4809bcedc65e5c1c537ab08ec49b72602596bfd9fdea",
+    "src/wb_decoder.v": "b5b0502e49c696c92dace7955cc3b5acbe2613826248aef36e670cf47a89f64d"
+  }
+}

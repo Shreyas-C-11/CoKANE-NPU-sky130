@@ -1,85 +1,40 @@
-# Baseline flow contains instance-specific ECOs for a different netlist.
-raise SystemExit("Historical CPU+MAC ECO flow is disabled for CoKANE. Use a new generic flow after RTL/synthesis validation.")
 #!/usr/bin/env python3
-import os,pathlib,sys,json
+"""Fresh CoKANE physical flow; no historical instance-specific ECOs."""
+import json,os,pathlib,subprocess,sys
 from librelane.state import State
 from librelane.flows.classic import Classic
-from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT,DetailedRouting
 from librelane.steps import Step
-
+from librelane.steps.openroad import CTS,OpenROADStep,RepairDesignPostGRT,ResizerTimingPostGRT
+root=pathlib.Path(__file__).resolve().parents[1]
+subprocess.run([sys.executable,str(root/'scripts/check-frozen-prototype.py')],check=True)
 @Step.factory.register()
 class ClockFanoutRepair(OpenROADStep):
     id='OpenROAD.ClockFanoutRepair'
-    name='Clock Root Fanout Repair'
+    name='Generic clock fanout repair'
     config_vars=CTS.config_vars
-    def get_script_path(self):
-        return str(pathlib.Path(__file__).with_name('clock-fanout.tcl'))
-
+    def get_script_path(self):return str(root/'scripts/signoff-clock-fanout.tcl')
 @Step.factory.register()
 class SlowCornerRepair(RepairDesignPostGRT):
     id='OpenROAD.SlowCornerRepair'
-    name='Slow Corner Electrical Repair'
-    def run(self,state_in,**kwargs):
-        return OpenROADStep.run(self,state_in,corners=['max_ss_100C_1v60'],**kwargs)
-    def get_script_path(self):
-        return str(pathlib.Path(__file__).with_name('repair-slowcorner.tcl'))
-
+    name='Slow-corner electrical repair'
+    def run(self,state_in,**kwargs):return OpenROADStep.run(self,state_in,corners=['max_ss_100C_1v60'],**kwargs)
+    def get_script_path(self):return str(root/'scripts/repair-slowcorner.tcl')
 @Step.factory.register()
 class FinalElectricalRepair(SlowCornerRepair):
     id='OpenROAD.FinalElectricalRepair'
-    name='Final Slow Corner Electrical Repair'
-    def get_script_path(self):
-        return str(pathlib.Path(__file__).with_name('final-electrical.tcl'))
-
-@Step.factory.register()
-class PostRouteFanoutRepair(SlowCornerRepair):
-    id='OpenROAD.PostRouteFanoutRepair'
-    name='Post-route Fanout Branch Repair'
-    def get_script_path(self):
-        return str(pathlib.Path(__file__).with_name('post-fanout.tcl'))
-
-@Step.factory.register()
-class PostFanoutReroute(DetailedRouting):
-    id='OpenROAD.PostFanoutReroute'
-    name='Post-fanout Detailed Routing'
-    def run(self,state_in,**kwargs):
-        if not state_in.metrics.get('design__postroute_fanout_splits',0):
-            return {},{}
-        return super().run(state_in,**kwargs)
-
-@Step.factory.register()
-class PostRouteTransitionRepair(SlowCornerRepair):
-    id='OpenROAD.PostRouteTransitionRepair'
-    name='Post-route Transition Driver Repair'
-    def get_script_path(self):
-        return str(pathlib.Path(__file__).with_name('post-transition.tcl'))
-
-@Step.factory.register()
-class PostTransitionReroute(DetailedRouting):
-    id='OpenROAD.PostTransitionReroute'
-    name='Post-transition Detailed Routing'
-    def run(self,state_in,**kwargs):
-        if not state_in.metrics.get('design__postroute_transition_repairs',0):return {},{}
-        return super().run(state_in,**kwargs)
-
-class QualifiedCPUFlow(Classic):
+    name='Final slow-corner electrical repair'
+    def get_script_path(self):return str(root/'scripts/final-electrical.tcl')
+class CoKANESignoffFlow(Classic):
     Steps=Classic.Steps.copy()
     Steps.insert(Steps.index(CTS)+1,ClockFanoutRepair)
     Steps[Steps.index(RepairDesignPostGRT)]=SlowCornerRepair
     Steps.insert(Steps.index(ResizerTimingPostGRT)+1,FinalElectricalRepair)
-    index=Steps.index(DetailedRouting)+1
-    Steps[index:index]=[PostRouteFanoutRepair,PostFanoutReroute,PostRouteTransitionRepair,PostTransitionReroute]
-
-root=pathlib.Path(__file__).resolve().parent.parent
-pdk_root=pathlib.Path(os.environ['PDK_ROOT'])
-if not (pdk_root/'sky130A').is_dir():
-    version=json.loads((root/'evidence/pdk-version.json').read_text())['version']
-    pdk_root=pdk_root/'ciel/sky130/versions'/version
-assert (pdk_root/'sky130A').is_dir(), 'Pinned SKY130 revision missing'
-flow=QualifiedCPUFlow(sys.argv[1],pdk_root=str(pdk_root),pdk='sky130A')
+pdk=pathlib.Path(os.environ['PDK_ROOT'])
+if not (pdk/'sky130A').is_dir():pdk=pdk/'ciel/sky130/versions'/json.loads((root/'evidence/pdk-version.json').read_text())['version']
+flow=CoKANESignoffFlow(sys.argv[1],pdk_root=str(pdk),pdk='sky130A')
 options={}
 if os.getenv('QUALIFY_FROM_STATE'):
     options['with_initial_state']=State.loads(pathlib.Path(os.environ['QUALIFY_FROM_STATE']).read_text())
-    options['frm']=os.getenv('QUALIFY_FROM_STEP','OpenROAD.SlowCornerRepair')
-if os.getenv('QUALIFY_TO'): options['to']=os.environ['QUALIFY_TO']
+    options['frm']=os.environ['QUALIFY_FROM_STEP']
+if os.getenv('QUALIFY_TO'):options['to']=os.environ['QUALIFY_TO']
 flow.start(tag=sys.argv[2],_force_run_dir=sys.argv[3],**options)

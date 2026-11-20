@@ -37,7 +37,7 @@ estimate_parasitics -global_routing
 # Repair Design
 # Leave two loads of headroom for antenna diodes added later.
 # The declared design limit remains MAX_FANOUT_CONSTRAINT (10).
-set_max_fanout $::env(MAX_FANOUT_CONSTRAINT) [current_design]
+set_max_fanout 7 [current_design]
 set arg_list [list]
 lappend arg_list -verbose
 lappend arg_list -max_wire_length $::env(GRT_DESIGN_REPAIR_MAX_WIRE_LENGTH)
