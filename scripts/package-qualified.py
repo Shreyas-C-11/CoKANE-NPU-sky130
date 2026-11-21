@@ -54,7 +54,6 @@ for model in ['synthetic','zero']:
 
 entries['source-README.md']=root/'README.md'
 entries['NPU_Specs.md']=root/'NPU_Specs.md'
-entries['SIGNOFF.md']=root/'SIGNOFF.md'
 for p in (root/'evidence/cokane').rglob('*'):
  if p.is_file():entries['evidence/cokane/'+str(p.relative_to(root/'evidence/cokane'))]=p
 for p in (root/'evidence').glob('*'):

@@ -119,7 +119,7 @@ through Tiny Tapeout's custom-GDS action. Hashes are checked before publishing
 the submission artifact. It does not rebuild the physical design. GitHub
 prechecks and gate tests run again on the imported artifact.
 
-See `NPU_Specs.md`, `SIGNOFF.md`, `layout/manifest.json` and
+See `NPU_Specs.md` (complete chip specification and qualification scope), `layout/manifest.json` and
 `evidence/qualification-ck-signoff-r4.json` for the precise architecture and
 qualification scope. Trained accuracy, speedup, silicon/radiation validation,
 SDF timing simulation and full-chip power/IR/EM or foundry release are outside
