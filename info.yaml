@@ -1,8 +1,8 @@
 project:
   title:        "CoKANE NPU"
-  author:       "Shreyas Chaudhari"
+  author:       "Shreyas Chaudhari, Siddharth Vivek, Tejas Singh Kohli, Arohi Mehta"
   discord:      ""
-  description: "CPU + MAC + programmable CoKANE: PicoRV32 + hybrid MAC + six-bit scheduled KAN lookup engine"
+  description: "CPU + mac-sentry + programmable CoKANE: PicoRV32 + hybrid MAC + six-bit scheduled KAN lookup engine"
   language:     "Verilog"
   clock_hz:     20000000
   tiles: "5x4"

@@ -1,6 +1,6 @@
 # How it works
 
-This SKY130 digital block combines a PicoRV32 RV32E CPU, a signed MAC with
+This SKY130 digital block combines a PicoRV32 RV32E CPU, [mac-sentry](https://github.com/Gargantuan5k/mac-sentry-ttsky26e), a signed MAC with
 SECDED/residue checking, and a programmable CoKANE lookup-and-add engine.
 It occupies **5x4 tiles**, with a final GDS boundary of **856.52 x 511.36 um**
 (**0.437990 mm2**). The qualified core clock is **20 MHz** (50 ns period).

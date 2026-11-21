@@ -1,12 +1,13 @@
-# CPU + MAC + CoKANE
+# CPU + mac-sentry + CoKANE
 
-A programmable lookup/add inference chip combining a PicoRV32 CPU, a protected signed 8×8 MAC and a six-bit CoKANE engine. The frozen integrated design passed its declared SKY130 digital block qualification at **20 MHz in 5×4 Tiny Tapeout tiles**. Final macro area: **0.4379900672 mm²**.
+This programmable inference chip combines a PicoRV32 CPU, a six-bit CoKANE lookup-and-add engine, and [mac-sentry](NPU_Specs.md#independent-protected-mac), a separate signed 8×8 multiply–accumulate peripheral. MAC Sentry protects its accumulator with SECDED and checks arithmetic results with a modulo-7 predictor and bounded retry. The frozen integrated design passed its declared SKY130 digital block qualification at **20 MHz in 5×4 Tiny Tapeout tiles**. Final macro area: **0.4379900672 mm²**.
 
 The CPU schedules layers and transfers model tables and feature maps through external host-backed memory. CoKANE reuses one 64×6-bit LUT, a shared adder and eight 12-bit partial sums, with a single final saturation point. Synthetic and zero-model inference are verified; trained accuracy and physical board operation remain unmeasured.
 
+
 ## Documentation
 
-- **[Complete chip specification](NPU_Specs.md)** — CPU, MAC, CoKANE, block diagram, registers, memory, pins, timing, qualification and submission procedure.
+- **[Complete chip specification](NPU_Specs.md)** — CPU, mac-sentry, CoKANE, block diagram, registers, memory, pins, timing, qualification and submission procedure.
 - [Tiny Tapeout datasheet](docs/info.md) — project pinout, boot and testing summary.
 - [External-memory host guide](host/README.md) — board setup and stepped-clock bring-up.
 - [Qualification evidence](evidence/qualification-ck-signoff-r4.json) and [qualified layout manifest](layout/manifest.json).
