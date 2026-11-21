@@ -22,5 +22,3 @@ python3 scripts/verify-submission.py
 This checks frozen functional sources, host images and qualified physical hashes. See the specification for CAD environment requirements and additional test commands. CI imports the exact qualified GDS using Tiny Tapeout's custom-GDS workflow.
 
 Prototype: `cokane-working-prototype-v0.2` (`db530b7`). Qualified release: `cokane-20mhz-5x4-v0.2` (`0fa8227`). Performance work is preserved separately.
-
-Any future submission must use the exact revision whose required checks pass.
