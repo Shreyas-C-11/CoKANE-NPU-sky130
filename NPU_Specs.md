@@ -1,6 +1,6 @@
 # CPU + MAC + CoKANE chip specification
 
-Revision 1.0 — 21 November 2026. Canonical specification for the frozen SKY130 integrated chip. The declared digital block qualification **passed** in `ck-signoff-r4`. Official fabrication submission is **on hold at the owner's request**; no portal revision or fabrication order has been submitted.
+Revision 1.0 — 21 November 2026. Canonical specification for the frozen SKY130 integrated chip.
 
 ## Quick reference
 
@@ -90,7 +90,10 @@ A missing external acknowledgment stalls the CPU indefinitely. Firmware polling 
 
 ## Independent protected MAC
 
-`src/mac_wb.v` wraps the hybrid MAC. Operands are signed 8-bit values; multiplication produces a signed 16-bit product. Successful operations add to a signed 24-bit accumulator **modulo 2²⁴**, range −8,388,608…8,388,607. There is no saturation or accumulator-overflow flag.
+The independent fault-tolerant MAC unit is [mac-sentry](https://github.com/Gargantuan5k/mac-sentry-ttsky26e), developed by [Siddharth Vivek](https://github.com/Gargantuan5k), [Tejas Singh Kohli](https://github.com/TejasKohlii/) and [Arohi Mehta](https://github.com/arohimehta123). Detailed documentation can be found at the source repository.
+
+
+The [Wishbone wrapper](src/mac_wb.v) exposes the MAC Sentry hybrid core to the CPU. The [source provenance record](evidence/source-provenance.json) identifies the imported upstream revision. Operands are signed 8-bit values; multiplication produces a signed 16-bit product. Successful operations add to a signed 24-bit accumulator **modulo 2²⁴**, range −8,388,608…8,388,607. There is no saturation or accumulator-overflow flag.
 
 Accumulator storage uses 30 bits: 24 data bits, five Hamming parity bits and one overall parity bit. The shortened extended Hamming code corrects a single storage-bit error and detects a double-bit error, with scrubbing during idle or operation. A separate modulo-7 predictor checks the full sign-extended 25-bit arithmetic candidate before its low 24 bits are committed. Residue value 7 is invalid. An arithmetic mismatch permits at most two retries after the initial attempt; a failed attempt does not commit a new sum.
 
@@ -105,6 +108,12 @@ Storage uncorrectable error completes with error 1; retry exhaustion completes w
 | `0x10` | ACC | RO signed 24-bit accumulator sign-extended to 32 bits |
 
 Writes require `sel[0]`. Unknown words read zero; low two address bits are ignored. Start during busy is ignored; clear is effective only while idle. Use separate clear/start operations and poll readiness. Nonzero control writes clear wrapper completion flags; completed status remains sticky until the next such write, not read-to-clear. Check done, valid and error before consuming ACC. Wrapper A/B writes while busy do not change saved operands.
+
+### Verification and limits
+
+The integrated firmware clears the accumulator, issues three signed MAC operations through the CPU, and checks both completion status and the successive sums of −12, 9,988 and −6,268. The gate-level simulation of the integrated chip passed this test. [Firmware test](test/test.py) · [Recorded gate-level result](evidence/gl-ck-signoff-r4-results.xml)
+
+The upstream MAC Sentry RTL regression injects faults into accumulator storage, the arithmetic candidate, the checker, and the commit path. A corrupted saved operand can feed both the arithmetic and prediction paths, allowing them to agree on a wrong result. Correlated faults can also make a wrong candidate match the predicted residue. After a successful check, corruption before SECDED encoding can store a wrong sum with a valid codeword. [Upstream fault model](https://github.com/Gargantuan5k/mac-sentry/blob/85ddffb1a075da11f08c6ae78307abfb2458ea0a/spec/hybrid_mac.md) · [Upstream fault-injection results](https://github.com/Gargantuan5k/mac-sentry/blob/85ddffb1a075da11f08c6ae78307abfb2458ea0a/research/hybrid_validation.md)
 
 This protection covers the stated accumulator/arithmetic mechanisms, not the whole chip. Modulo-7 checking can miss arithmetic differences divisible by seven; SECDED does not protect arbitrary multi-bit errors. Production fault-injection inputs are tied off and not exposed at pins. No radiation or silicon fault-rate guarantee is established.
 
@@ -332,6 +341,5 @@ Before any future authorized submission, require passing checks on **the exact s
 6. `test / test`: RTL firmware regression.
 7. `external-memory-host / host`: host memory/failure and RTL protocol tests.
 
-Commit `7fe55d7fa382e657f518066e6c63d8a14a072216` passed these checks before this documentation cleanup (clean GDS workflow run `44740650591`). Every later commit needs its own CI results; old passes do not qualify a new revision automatically.
-
-**Do not create or upload a portal revision while the owner's hold remains in effect.** If later authorized, follow the [official submission guide](https://www.tinytapeout.com/guides/advanced-workshop/submit-your-design/), confirm the selected SKY130 shuttle accepts/has capacity for 5×4 tiles, and submit the exact tested SHA. Record portal revision, shuttle, allocation, artifact hashes and acceptance. Supported geometry is not a reserved allocation. Repository publication and passing CI alone do not place a fabrication order. The owner reviews price, payment and binding terms before any order.
+Commit `7fe55d7fa382e657f518066e6c63d8a14a072216` passed these checks before this documentation cleanup (clean GDS workflow run `44740650591`).
+.
