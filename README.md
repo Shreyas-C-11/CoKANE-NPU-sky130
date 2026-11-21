@@ -23,4 +23,4 @@ This checks frozen functional sources, host images and qualified physical hashes
 
 Prototype: `cokane-working-prototype-v0.2` (`db530b7`). Qualified release: `cokane-20mhz-5x4-v0.2` (`0fa8227`). Performance work is preserved separately.
 
-**Official portal submission is on hold at the owner's request.** Publication and passing CI do not submit this chip for fabrication. Any future submission must use the exact revision whose required checks pass.
+Any future submission must use the exact revision whose required checks pass.
